@@ -78,7 +78,23 @@ public class Application {
     }
     
     /**
-     * Displays the choices for student users
+     * Displays the interface for student users
+     */
+    
+    public void student() {
+    	System.out.println("View course grades.\n");
+    }
+    
+    /**
+     *  Displays the interface for teacher users
+     */
+    
+    /**
+     * Displays the interface for administrators
+     */
+    
+    /**
+     * Displays the interface for root users
      */
 
     /**
