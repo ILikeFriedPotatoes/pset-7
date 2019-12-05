@@ -81,21 +81,41 @@ public class Application {
      * Displays the interface for student users
      */
     
-    public void student() {
-    	System.out.println("View course grades.\n");
+    public void studentInterface() {
+    	System.out.println("\nView course grades.");
+    	System.out.println("View assignment grades by course.");
+    	System.out.println("Change password.");
+    	System.out.println("Logout.");
     }
     
     /**
      *  Displays the interface for teacher users
      */
     
+    public void teacherInterface() {
+    	System.out.println("\nView enrollment by course.");
+    	System.out.println("Add assignment.");
+    	System.out.println("Delete assignment.");
+    	System.out.println("Enter grade for assignment.");
+    	System.out.println("Change password.");
+    	System.out.println("Logout.");
+    }
+    
     /**
      * Displays the interface for administrators
      */
     
+    public void administratorInterface() {
+    	
+    }
+    
     /**
      * Displays the interface for root users
      */
+    
+    public void rootUserInterface() {
+    	
+    }
 
     /**
      * Determines whether or not the user has logged in before.
