@@ -76,6 +76,10 @@ public class Application {
 
         return activeUser != null;
     }
+    
+    /**
+     * Displays the choices for student users
+     */
 
     /**
      * Determines whether or not the user has logged in before.
