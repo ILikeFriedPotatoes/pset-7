@@ -29,6 +29,10 @@ public class Administrator extends User {
     
     public Administrator(int administratorId, String firstName, String lastName, String jobTitle, ResultSet rs) throws SQLException {
 		super(rs);
+		this.administratorId = administratorId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.jobTitle = jobTitle;
 		
 	}
 
