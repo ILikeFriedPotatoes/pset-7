@@ -81,8 +81,9 @@ public class Application {
      * Displays the interface for student users
      */
     
-    public void studentInterface() {
-    	System.out.println("\nView course grades.");
+    private void studentInterface() {
+    	System.out.println("\nLogin to an account");
+    	System.out.println("View course grades.");
     	System.out.println("View assignment grades by course.");
     	System.out.println("Change password.");
     	System.out.println("Logout.");
@@ -92,8 +93,9 @@ public class Application {
      *  Displays the interface for teacher users
      */
     
-    public void teacherInterface() {
-    	System.out.println("\nView enrollment by course.");
+    private void teacherInterface() {
+    	System.out.println("\nLogin to an account");
+    	System.out.println("View enrollment by course.");
     	System.out.println("Add assignment.");
     	System.out.println("Delete assignment.");
     	System.out.println("Enter grade for assignment.");
@@ -105,7 +107,15 @@ public class Application {
      * Displays the interface for administrators
      */
     
-    public void administratorInterface() {
+    private void administratorInterface() {
+    	System.out.println("\nLogin to an account");
+    	System.out.println("View faculty");
+    	System.out.println("View faculty by department");
+    	System.out.println("View enrollment");
+    	System.out.println("View enrollment by grade");
+    	System.out.println("View enrollment by course");
+    	System.out.println("Change password");
+    	System.out.println("Logout of an account");
     	
     }
     
@@ -113,7 +123,12 @@ public class Application {
      * Displays the interface for root users
      */
     
-    public void rootUserInterface() {
+    private void rootUserInterface() {
+    	System.out.println("\nLogin to an account");
+    	System.out.println("Reset password foranother account");
+    	System.out.println("Factory reset database");
+    	System.out.println("Logout of an account");
+    	System.out.println("Shutdown application");
     	
     }
 
