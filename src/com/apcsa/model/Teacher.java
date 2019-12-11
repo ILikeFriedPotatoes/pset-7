@@ -13,6 +13,19 @@ public class Teacher extends User {
     private String firstName;
     private String lastName;
     
+    public int getTeacherId() {
+    	return teacherId;
+    }
     
-
+    public int getDepartmentId() {
+    	return departmentId;
+    }
+    
+    public String getFirstName() {
+    	return firstName;
+    }
+    
+    public String getLastName() {
+    	return lastName;
+    }
 }
