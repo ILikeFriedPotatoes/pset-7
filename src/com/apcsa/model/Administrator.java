@@ -23,11 +23,11 @@ public class Administrator extends User {
             rs.getString("first_Name"),
             rs.getString("last_Name"),
             rs.getString("job_Title"),
-            rs
+            user
        );
     }
     
-    public Administrator(int administratorId, String firstName, String lastName, String jobTitle, ResultSet rs) throws SQLException {
+    public Administrator(int administratorId, String firstName, String lastName, String jobTitle, User user) throws SQLException {
     	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
 		this.administratorId = administratorId;
 		this.firstName = firstName;
