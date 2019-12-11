@@ -18,17 +18,17 @@ public class Administrator extends User {
      * @param rs the set of information for the user
      */
     
-    public Administrator(User user, ResultSet rs) throws SQLException{
-    	this(rs.getInt("administratorId"),
-            rs.getString("firstName"),
-            rs.getString("lastName"),
-            rs.getString("jobTitle"),
+    public Administrator (User user, ResultSet rs) throws SQLException{
+    	this(rs.getInt("administrator_Id"),
+            rs.getString("first_Name"),
+            rs.getString("last_Name"),
+            rs.getString("job_Title"),
             rs
        );
     }
     
     public Administrator(int administratorId, String firstName, String lastName, String jobTitle, ResultSet rs) throws SQLException {
-		super(rs);
+    	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
 		this.administratorId = administratorId;
 		this.firstName = firstName;
 		this.lastName = lastName;
