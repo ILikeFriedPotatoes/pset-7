@@ -44,6 +44,21 @@ public class User {
         this.password = password;
         this.lastLogin = lastLogin;
     }
+    
+    /**
+     * Creates an instance of the user class with user as the parameter
+     * 
+     * @param user an existing user object
+     */
+    
+    public User(User user) {
+        this(user.getUserId(),
+             user.getAccountType(),
+             user.getUsername(),
+             user.getPassword(),
+             user.getLastLogin()
+        );
+    }
 
     /**
      * @return userId

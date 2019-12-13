@@ -27,6 +27,16 @@ public class Administrator extends User {
        );
     }
     
+    /**
+     * Creates an instance of the administrator class
+     * @param administratorId
+     * @param firstName
+     * @param lastName
+     * @param jobTitle
+     * @param user
+     * @throws SQLException
+     */
+    
     public Administrator(int administratorId, String firstName, String lastName, String jobTitle, User user) throws SQLException {
     	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
 		this.administratorId = administratorId;
@@ -35,6 +45,8 @@ public class Administrator extends User {
 		this.jobTitle = jobTitle;
 		
 	}
+    
+    
 
 	/**
      * @return administratorId

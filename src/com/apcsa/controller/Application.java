@@ -131,7 +131,15 @@ public class Application {
     	System.out.println("Shutdown application");
     	
     }
+    
+    /**
+     * Decides the type of account being logged into
+     */
 
+    private void accountType() {
+    	
+    }
+    
     /**
      * Determines whether or not the user has logged in before.
      *
