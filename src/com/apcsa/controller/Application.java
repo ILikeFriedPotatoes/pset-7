@@ -124,7 +124,7 @@ public class Application {
      */
     
     private void rootUserInterface() {
-    	System.out.println("\nLogin to an account");
+    	System.out.println("\nHello, again, Root!");
     	System.out.println("Reset password foranother account");
     	System.out.println("Factory reset database");
     	System.out.println("Logout of an account");
