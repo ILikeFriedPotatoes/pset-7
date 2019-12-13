@@ -43,10 +43,7 @@ public class Administrator extends User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.jobTitle = jobTitle;
-		
 	}
-    
-    
 
 	/**
      * @return administratorId
