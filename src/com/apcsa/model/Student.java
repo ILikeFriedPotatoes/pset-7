@@ -67,5 +67,4 @@ public class Student extends User {
     public String getLastName() {
         return lastName;
     }
-
 }
