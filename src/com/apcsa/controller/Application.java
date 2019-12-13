@@ -48,35 +48,42 @@ public class Application {
         // continuously prompt for login credentials and attempt to login
 
         while (true) {
-            System.out.print("\nUsername: ");
-            String username = in.next();
+            showLoginUI();
+        }
+    }
+    
+    /**
+     * Displays the login screen
+     */
+    private void showLoginUI() {
+    	System.out.print("\nUsername: ");
+        String username = in.next();
 
-            System.out.print("Password: ");
-            String password = in.next();
+        System.out.print("Password: ");
+        String password = in.next();
 
-            // if login is successful, update generic user to administrator, teacher, or student
-	        try {
-	            if (login(username, password)) {
-	                activeUser = activeUser.isAdministrator()
-	                    ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
-	                    ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
-	                    ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
-	                    ? activeUser : null;
-	
-	                if (isFirstLogin() && !activeUser.isRoot()) {
-	                    // first-time users need to change their passwords from the default provided
-	                }
-	
-	                // create and show the user interface
-	                //
-	                // remember, the interface will be difference depending on the type
-	                // of user that is logged in (root, administrator, teacher, student)
-	            } else {
-	                System.out.println("\nInvalid username and/or password.");
-	            }
-	        } catch (Exception e) {
-	        	shutdown(e);
-	        }
+        // if login is successful, update generic user to administrator, teacher, or student
+        try {
+            if (login(username, password)) {
+                activeUser = activeUser.isAdministrator()
+                    ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
+                    ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
+                    ? PowerSchool.getStudent(activeUser) : activeUser.isRoot()
+                    ? activeUser : null;
+
+                if (isFirstLogin() && !activeUser.isRoot()) {
+                    // first-time users need to change their passwords from the default provided
+                }
+
+                // create and show the user interface
+                //
+                // remember, the interface will be difference depending on the type
+                // of user that is logged in (root, administrator, teacher, student)
+            } else {
+                System.out.println("\nInvalid username and/or password.");
+            }
+        } catch (Exception e) {
+        	shutdown(e);
         }
     }
 
@@ -184,6 +191,49 @@ public class Application {
             System.out.println("\nGoodbye!");
             System.exit(0);
         }
+    }
+    
+    /*
+     * Allows a root user to reset another user's password.
+     */
+
+    private void resetPassword() {
+        //
+        // prompt root user to enter username of user whose password needs to be reset
+        //
+        // ask root user to confirm intent to reset the password for that username
+        //
+        // if confirmed...
+        //      call database method to reset password for username
+        //      print success message
+        //
+    }
+
+    /*
+     * Resets the database to its factory settings.
+     */
+
+    private void factoryReset() {
+        //
+        // ask root user to confirm intent to reset the database
+        //
+        // if confirmed...
+        //      call database initialize method with parameter of true
+        //      print success message
+        //
+    }
+    
+    /*
+     * Logs out of the application.
+     */
+
+    private void logout() {
+        //
+        System.out.print("Are you sure you want to logout? (y/n)");
+        //
+        // if confirmed...
+        //      set activeUser to null
+        //
     }
     
     /**
