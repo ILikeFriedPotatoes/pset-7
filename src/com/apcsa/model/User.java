@@ -37,11 +37,27 @@ public class User {
      */
 
     public User(int userId, String accountType, String username, String password, String lastLogin) {
-        this.userId = userId;
+        super();
+    	this.userId = userId;
         this.accountType = accountType.toLowerCase();
         this.username = username;
         this.password = password;
         this.lastLogin = lastLogin;
+    }
+    
+    /**
+     * Creates an instance of the user class with user as the parameter
+     * 
+     * @param user an existing user object
+     */
+    
+    public User(User user) {
+        this(user.getUserId(),
+             user.getAccountType(),
+             user.getUsername(),
+             user.getPassword(),
+             user.getLastLogin()
+        );
     }
 
     /**
