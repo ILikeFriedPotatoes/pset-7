@@ -62,7 +62,7 @@ public class Utils {
     public static boolean confirm(Scanner in, String message) {
     	String response = "";
     	
-    	System.out.println("Are you sure you want to " + in + "? (y/n)");
+    	System.out.println("\n" + message);
     	
     	while(!response.equals("y") && !response.equals("n")) {
     		System.out.print(message);
