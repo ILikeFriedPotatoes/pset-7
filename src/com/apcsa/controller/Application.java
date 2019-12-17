@@ -247,13 +247,13 @@ public class Application {
      */
 
     private void factoryReset() {
-        //
         // ask root user to confirm intent to reset the database
-        //
-        // if confirmed...
-        //      call database initialize method with parameter of true
-        //      print success message
-        //
+    	if(Utils.confirm(in, "\nAre you sure you want to reset all settings and data? (y/n)\n")) {
+    		// call database initialize method with parameter of true
+    		PowerSchool.initialize(true);
+            // print success message
+    		System.out.println("Successfully reset database");
+    	} 
     }
     
     /*
@@ -261,12 +261,9 @@ public class Application {
      */
 
     private void logout() {
-        //
-        System.out.print("Are you sure you want to logout? (y/n)");
-        //
-        // if confirmed...
-        //      set activeUser to null
-        //
+        if(Utils.confirm(in, "Are you sure you want to logout? (y/n)")) {
+        	activeUser = null;
+        }
     }
     
     /**
@@ -279,7 +276,7 @@ public class Application {
     			case VIEW_GRADES: break;
     			case VIEW_GRADES_COURSE: break;
     			case PASSWORD: break;
-    			case LOGOUT: break;
+    			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
     		}
     	}
@@ -304,15 +301,49 @@ public class Application {
     /**
      *  Displays the interface for teacher users
      */
-    
+ 
     private void showTeacherUI() {
-    	System.out.println("\nLogin to an account");
-    	System.out.println("View enrollment by course.");
-    	System.out.println("Add assignment.");
-    	System.out.println("Delete assignment.");
-    	System.out.println("Enter grade for assignment.");
-    	System.out.println("Change password.");
-    	System.out.println("Logout.");
+    	while(activeUser!= null) {
+    		switch(getTeacherMenuSelection()) {
+	    		case VIEW_ENROLLMENT: break;
+	    		case ADD_ASSIGNMENT: break;
+	    		case DELETE_ASSIGNMENT: break;
+	    		case ENTER_GRADE: break;
+	    		case PASSWORD: break;
+	    		case LOGOUT: logout(); break;
+	    		default: System.out.println("\nInvalid selection."); break;
+    		}
+    	}
+    }
+    
+    /*
+     * Determines the user interface for teachers
+     */
+    
+    /*
+     * enum TeacherAction {
+    	VIEW_ENROLLMENT, ADD_ASSIGNMENT, DELETE_ASSIGNMENT, ENTER_GRADE, PASSWORD,
+    	LOGOUT
+    }
+     */
+    private TeacherAction getTeacherMenuSelection() {
+    	System.out.println("\n[1] View enrollment by course");
+    	System.out.println("[2] Add assignment");
+    	System.out.println("[3] Delete assignment");
+    	System.out.println("[4] Enter grade");
+    	System.out.println("[5] Change password");
+    	System.out.println("[6] Logout");
+    	System.out.print("\n::: ");
+    	
+    	switch(Utils.getInt(in, -1)) {
+	    	case 1: return TeacherAction.VIEW_ENROLLMENT;
+	    	case 2: return TeacherAction.ADD_ASSIGNMENT;
+	    	case 3: return TeacherAction.DELETE_ASSIGNMENT;
+	    	case 4: return TeacherAction.ENTER_GRADE;
+	    	case 5: return TeacherAction.PASSWORD;
+	    	case 6: return TeacherAction.LOGOUT;
+    		default: return null;
+    	}
     }
     
     /**
@@ -328,7 +359,7 @@ public class Application {
     			case VIEW_ENROLLMENT_GRADE: break;
     			case VIEW_ENROLLMENT_COURSE: break;
     			case PASSWORD: break;
-    			case LOGOUT: break;
+    			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
     		}
     	}

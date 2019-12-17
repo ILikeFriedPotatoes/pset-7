@@ -61,9 +61,6 @@ public class Utils {
     
     public static boolean confirm(Scanner in, String message) {
     	String response = "";
-    	
-    	System.out.println("\n" + message);
-    	
     	while(!response.equals("y") && !response.equals("n")) {
     		System.out.print(message);
     		response = in.next().toLowerCase();
