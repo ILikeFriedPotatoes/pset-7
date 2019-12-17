@@ -11,7 +11,7 @@ public class Teacher extends User {
     private int departmentId;
     private String firstName;
     private String lastName;
-    
+
     /**
      * Creates an instance of the Teacher class.
      *
@@ -37,7 +37,7 @@ public class Teacher extends User {
      * @param lastName the teacher's last name
      * @param rs a ResultSet of Teacher information
      */
-    
+
     public Teacher(int teacherId, int departmentId, String firstName, String lastName,  User user) {
     	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
 		this.teacherId = teacherId;
@@ -45,35 +45,35 @@ public class Teacher extends User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-    
+
     /**
      * @return teacherId
      */
-    
+
     public int getTeacherId() {
         return teacherId;
     }
-    
+
     /**
      * @return departmentId
      */
-    
+
     public int getDepartmentId() {
         return departmentId;
     }
-    
+
     /**
      * @return firstName
      */
-    
+
     public String getFirstName() {
         return firstName;
     }
-    
+
     /**
      * @return lastName
      */
-    
+
     public String getLastName() {
         return lastName;
     }
