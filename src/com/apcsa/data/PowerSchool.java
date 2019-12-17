@@ -171,8 +171,30 @@ public class PowerSchool {
     }
 
     /*
-     * Creates an arraylist of students in the database and returns it.
+     * Creates an arraylist of the teachers in the database.
      */
+
+    public static ArrayList<Teacher> getFaculty() {
+        ArrayList<Teacher> faculty = new ArrayList<Teacher>();
+         try (Connection conn = getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_FACULTY);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    faculty.add(new Teacher(rs));
+                }
+            }
+         } catch (SQLException e) {
+             System.out.println(e);
+         }
+
+         return faculty;
+     }
+
+    
+    /*
+     * Creates an arraylist of students in the database.
+     */
+    
    public static ArrayList<Student> getStudents() {
        ArrayList<Student> students = new ArrayList<Student>();
        try (Connection conn = getConnection()) {

@@ -11,6 +11,7 @@ public class Teacher extends User {
     private int departmentId;
     private String firstName;
     private String lastName;
+	private String departmentName;
 
     /**
      * Creates an instance of the Teacher class.
@@ -19,34 +20,25 @@ public class Teacher extends User {
      * @param rs a ResultSet of Teacher information
      */
     
-    public Teacher (User user, ResultSet rs) throws SQLException {
-    	this(rs.getInt("teacher_id"),
-             rs.getInt("department_id"),
-             rs.getString("first_name"),
-             rs.getString("last_name"),
-             user
-        );
+    public Teacher(User user, ResultSet rs) throws SQLException {
+    	super(user);
+    	
+    	this.teacherId = rs.getInt("teacher_id");
+    	this.departmentId = rs.getInt("department_id");
+    	this.firstName = rs.getString("first_name");
+        this.lastName = rs.getString("last_name");
     }
 
-    /**
-     * Creates an instance of the Teacher class.
-     *
-     * @param teacherId the teacher's ID
-     * @param departmentId the teacher's department
-     * @param firstName the teacher's first name
-     * @param lastName the teacher's last name
-     * @param rs a ResultSet of Teacher information
-     */
-
-    public Teacher(int teacherId, int departmentId, String firstName, String lastName,  User user) {
-    	super(user.getUserId(), user.getAccountType(), user.getUsername(), user.getPassword(), user.getLastLogin());
-		this.teacherId = teacherId;
-		this.departmentId = departmentId;
-		this.firstName = firstName;
-		this.lastName = lastName;
+    public Teacher(ResultSet rs) throws SQLException {
+		super(rs.getInt("user_id"), rs.getString("account_type"), rs.getString("username"), rs.getString("auth"), rs.getString("last_login"));
+		this.teacherId = rs.getInt("teacher_id");
+		this.firstName = rs.getString("first_name");
+		this.lastName = rs.getString("last_name");
+        this.departmentName = rs.getString("title");
+        this.departmentId = rs.getInt("department_id");
 	}
 
-    /**
+	/**
      * @return teacherId
      */
 
