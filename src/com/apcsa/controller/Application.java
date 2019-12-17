@@ -17,6 +17,8 @@ import com.apcsa.model.User;
  */
 
 enum RootAction { PASSWORD, DATABASE, LOGOUT, SHUTDOWN }
+enum AdminAction { VIEW_FACULTY, VIEW_FACULTY_DEPARTMENT, VIEW_ENROLLMENT,
+	VIEW_ENROLLMENT_GRADE, VIEW_ENROLLMENT_COURSE, PASSWORD, LOGOUT}
 
 public class Application {
 
@@ -111,11 +113,11 @@ public class Application {
     	if(activeUser.isRoot()) {
     		showRootUI();
     	} else if(activeUser.isAdministrator()) {
-    		
+    		showAdministratorUI();
     	} else if(activeUser.isTeacher()) {
-    		
+    		showTeacherUI();
     	} else if(activeUser.isStudent()) {
-    		
+    		showStudentUI();
     	}
     }
     
@@ -143,7 +145,6 @@ public class Application {
     
     private RootAction getRootMenuSelection() {
     	System.out.println("\n[1] Reset user password.");
-    	System.out.println("[1] Reset user password.");
         System.out.println("[2] Factory reset database.");
         System.out.println("[3] Logout.");
         System.out.println("[4] Shutdown.");
@@ -248,6 +249,11 @@ public class Application {
     	System.out.println("Logout.");
     }
     
+    private int getStudentMenuSelection() {
+    	
+    	return 1;
+    }
+    
     /**
      *  Displays the interface for teacher users
      */
@@ -266,16 +272,38 @@ public class Application {
      * Displays the interface for administrators
      */
     
-    private void administratorInterface() {
-    	System.out.println("\nLogin to an account");
-    	System.out.println("View faculty");
-    	System.out.println("View faculty by department");
-    	System.out.println("View enrollment");
-    	System.out.println("View enrollment by grade");
-    	System.out.println("View enrollment by course");
-    	System.out.println("Change password");
-    	System.out.println("Logout of an account");
+    private void showAdministratorUI() {
+    	while(activeUser != null) {
+    		switch(getAdminMenuSelection()) {
+    			case VIEW_FACULTY: break;
+    			case VIEW_FACULTY_DEPARTMENT: break;
+    			case VIEW_ENROLLMENT: break;
+    			case : break;
+    			default: System.out.println("\nInvalid selection."); break;
+    		}
+    	}
+    }
+    
+    private AdminAction getAdminMenuSelection() {
+    	System.out.println("[1] View faculty.");
+    	System.out.println("[2] View faculty by department.");
+    	System.out.println("[3] View student enrollment.");
+    	System.out.println("[4] View student enrollment by grade.");
+    	System.out.println("[5] View student enrollment by course.");
+    	System.out.println("[6] Change password.");
+        System.out.println("[7] Logout.");
+        System.out.print("\n::: ");
     	
+    	switch (Utils.getInt(in, -1)) {
+    		case 1: return AdminAction.VIEW_FACULTY;
+    		case 2: return AdminAction.VIEW_FACULTY_DEPARTMENT;
+    		case 3: return AdminAction.VIEW_ENROLLMENT;
+    		case 4: return AdminAction.VIEW_ENROLLMENT_GRADE;
+    		case 5: return AdminAction.VIEW_ENROLLMENT_COURSE;
+    		case 6: return AdminAction.PASSWORD;
+    		case 7: return AdminAction.LOGOUT;
+    		default: return null; 
+    	}
     }
     
     
