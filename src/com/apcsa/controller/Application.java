@@ -6,19 +6,32 @@ import com.apcsa.model.User;
 
 /**
  * 
+ * @title Power School
  * @author jwang
  * @author mman
  */
 
 /**
  * 
- * Creates an enum for the root user to
+ * Creates an enum for the root user, admin, student, and teacher to help
+ * with user interface.
  *
  */
 
-enum RootAction { PASSWORD, DATABASE, LOGOUT, SHUTDOWN }
-enum AdminAction { VIEW_FACULTY, VIEW_FACULTY_DEPARTMENT, VIEW_ENROLLMENT,
-	VIEW_ENROLLMENT_GRADE, VIEW_ENROLLMENT_COURSE, PASSWORD, LOGOUT}
+enum RootAction { 
+	PASSWORD, DATABASE, LOGOUT, SHUTDOWN
+}
+enum AdminAction { 
+	VIEW_FACULTY, VIEW_FACULTY_DEPARTMENT, VIEW_ENROLLMENT, VIEW_ENROLLMENT_GRADE,
+	VIEW_ENROLLMENT_COURSE, PASSWORD, LOGOUT
+}
+enum StudentAction {
+	VIEW_GRADES, VIEW_GRADES_COURSE, PASSWORD, LOGOUT
+}
+enum TeacherAction {
+	VIEW_ENROLLMENT, ADD_ASSIGNMENT, DELETE_ASSIGNMENT, ENTER_GRADE, PASSWORD,
+	LOGOUT
+}
 
 public class Application {
 
@@ -75,12 +88,13 @@ public class Application {
 
                 if (isFirstLogin() && !activeUser.isRoot()) {
                     // first-time users need to change their passwords from the default provided
+                	changePassword();
                 }
-
                 // create and show the user interface
                 //
                 // remember, the interface will be difference depending on the type
                 // of user that is logged in (root, administrator, teacher, student)
+                createAndShowUI();
             } else {
                 System.out.println("\nInvalid username and/or password.");
             }
@@ -209,7 +223,14 @@ public class Application {
         //      print success message
         //
     }
-
+    
+    /*
+     * Asks a user to change his or her password
+     */
+    private void changePassword() {
+    	
+    }
+    
     /*
      * Resets the database to its factory settings.
      */
@@ -242,16 +263,31 @@ public class Application {
      */
     
     private void showStudentUI() {
-    	System.out.println("\nLogin to an account");
-    	System.out.println("View course grades.");
-    	System.out.println("View assignment grades by course.");
-    	System.out.println("Change password.");
-    	System.out.println("Logout.");
+    	while(activeUser != null) {
+    		switch(getStudentMenuSelection()) {
+    			case VIEW_GRADES: break;
+    			case VIEW_GRADES_COURSE: break;
+    			case PASSWORD: break;
+    			case LOGOUT: break;
+    			default: System.out.println("\nInvalid selection."); break;
+    		}
+    	}
     }
     
-    private int getStudentMenuSelection() {
-    	
-    	return 1;
+    private StudentAction getStudentMenuSelection() {
+    		System.out.println("\n[1] View course grades.");
+    		System.out.println("[2] View assignment grades by course.");
+    		System.out.println("[3] Change password.");
+    		System.out.println("[4] Logout");
+    		System.out.print("\n::: ");
+    		
+    		switch(Utils.getInt(in, -1)) {
+    		case 1: return StudentAction.VIEW_GRADES;
+    		case 2: return StudentAction.VIEW_GRADES_COURSE;
+    		case 3: return StudentAction.PASSWORD;
+    		case 4: return StudentAction.LOGOUT;
+    		default: return null;
+    		}
     }
     
     /**
@@ -278,14 +314,17 @@ public class Application {
     			case VIEW_FACULTY: break;
     			case VIEW_FACULTY_DEPARTMENT: break;
     			case VIEW_ENROLLMENT: break;
-    			case : break;
+    			case VIEW_ENROLLMENT_GRADE: break;
+    			case VIEW_ENROLLMENT_COURSE: break;
+    			case PASSWORD: break;
+    			case LOGOUT: break;
     			default: System.out.println("\nInvalid selection."); break;
     		}
     	}
     }
     
     private AdminAction getAdminMenuSelection() {
-    	System.out.println("[1] View faculty.");
+    	System.out.println("\n[1] View faculty.");
     	System.out.println("[2] View faculty by department.");
     	System.out.println("[3] View student enrollment.");
     	System.out.println("[4] View student enrollment by grade.");
@@ -304,16 +343,6 @@ public class Application {
     		case 7: return AdminAction.LOGOUT;
     		default: return null; 
     	}
-    }
-    
-    
-    /**
-     * Decides the type of account being logged into
-     *
-     */
-    //This is a function @jwang. I'm not sure if we need this, so it's fine if you delete it
-    private void accountType() {
-    	
     }
     
     /**
