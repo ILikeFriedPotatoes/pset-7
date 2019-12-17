@@ -1,9 +1,14 @@
 package com.apcsa.model;
 
+import java.sql.Connection;
+import java.util.Scanner;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.apcsa.controller.Utils;
+import com.apcsa.data.PowerSchool;
 import com.apcsa.model.User;
+
 
 public class Student extends User {
 
