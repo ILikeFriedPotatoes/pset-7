@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import com.apcsa.controller.Utils;
 import com.apcsa.model.Administrator;
@@ -169,6 +170,25 @@ public class PowerSchool {
         return user;
     }
 
+    /*
+     * Creates an arraylist of students in the database and returns it.
+     */
+   public static ArrayList<Student> getStudents() {
+       ArrayList<Student> students = new ArrayList<Student>();
+       try (Connection conn = getConnection()) {
+           PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENTS);
+           try (ResultSet rs = stmt.executeQuery()) {
+               while (rs.next()) {
+                   students.add(new Student(rs));
+               }
+           }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return students;
+   }
+    
     /*
      * Establishes a connection to the database.
      *
