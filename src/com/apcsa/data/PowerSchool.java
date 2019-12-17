@@ -213,6 +213,34 @@ public class PowerSchool {
     }
 
     /*
+     * Updates the password for the user.
+     * 
+     * @param conn the current database connection
+     * @param username the user's username
+     * @param hasehdPassword the password to update 
+     */
+    
+    public static int updatePassword(Connection conn, String username, String hashedPassword) {
+    	try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_PASSWORD_SQL)) {
+        	stmt.setString(1, hashedPassword);
+        	stmt.setString(2, username);
+        	conn.setAutoCommit(false);
+        	if (stmt.executeUpdate() == 1) {
+        		conn.commit();
+        		
+        		return 1;
+        	}else {
+        		conn.rollback();
+        		
+        		return -1;
+        	}
+        } catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+    }
+    
+    /*
      * Builds the database. Executes a SQL script from a configuration file to
      * create the tables, setup the primary and foreign keys, and load sample data.
      */
