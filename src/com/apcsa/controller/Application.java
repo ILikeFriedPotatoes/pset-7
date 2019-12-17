@@ -88,7 +88,7 @@ public class Application {
 
                 if (isFirstLogin() && !activeUser.isRoot()) {
                     // first-time users need to change their passwords from the default provided
-                	changePassword();
+                	changePassword(username, password);
                 }
                 // create and show the user interface
                 //
@@ -227,8 +227,10 @@ public class Application {
     /*
      * Asks a user to change his or her password
      */
-    private void changePassword() {
+    private void changePassword(String username, String hashedPassword) {
+    	System.out.println("\nEnter new password: ");
     	
+    	PowerSchool.updatePassword(username, hashedPassword);
     }
     
     /*

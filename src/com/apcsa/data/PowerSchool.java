@@ -262,20 +262,22 @@ public class PowerSchool {
      * @param hasehdPassword the password to update 
      */
     
-    public static int updatePassword(Connection conn, String username, String hashedPassword) {
-    	try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_PASSWORD_SQL)) {
-        	stmt.setString(1, hashedPassword);
-        	stmt.setString(2, username);
-        	conn.setAutoCommit(false);
-        	if (stmt.executeUpdate() == 1) {
-        		conn.commit();
-        		
-        		return 1;
-        	}else {
-        		conn.rollback();
-        		
-        		return -1;
-        	}
+    public static int updatePassword(String username, String hashedPassword) {
+    	try (Connection conn = getConnection()) {
+    	
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_PASSWORD_SQL);
+    	stmt.setString(1, hashedPassword);
+    	stmt.setString(2, username);
+    	conn.setAutoCommit(false);
+    	if (stmt.executeUpdate() == 1) {
+    		conn.commit();
+    		
+    		return 1;
+    	}else {
+    		conn.rollback();
+    		
+    		return -1;
+    	}
         } catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
