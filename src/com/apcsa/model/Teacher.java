@@ -61,6 +61,14 @@ public class Teacher extends User {
     public String getFirstName() {
         return firstName;
     }
+    
+    /**
+     * @return departmentName
+     */
+    
+    public String getDepartmentName() {
+        return departmentName;
+    }
 
     /**
      * @return lastName
