@@ -91,7 +91,15 @@ public class User {
     public String getPassword() {
         return password;
     }
+    
+    /**
+     * changes password value
+     */
 
+    public void setPassword(String password) {
+    	this.password = password;
+    }
+    
     /**
      * @return lastLogin
      */

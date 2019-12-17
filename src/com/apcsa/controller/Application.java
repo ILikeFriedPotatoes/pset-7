@@ -229,8 +229,17 @@ public class Application {
      */
     private void changePassword(String username, String hashedPassword) {
     	System.out.println("\nEnter new password: ");
+    	String newPassword = Utils.getHash(in.next());
+    	String oldPassword = activeUser.getPassword();
+    	if(!(newPassword.equals(oldPassword))) {
+    		System.out.println("Successfully changed password.");
+    		activeUser.setPassword(newPassword);
+    		PowerSchool.updatePassword(username, newPassword);
+    	} else {
+    		System.out.println("Please enter in a new password");
+    		changePassword(username, hashedPassword);
+    	}
     	
-    	PowerSchool.updatePassword(username, hashedPassword);
     }
     
     /*
