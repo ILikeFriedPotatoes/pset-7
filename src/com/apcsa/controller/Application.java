@@ -215,13 +215,19 @@ public class Application {
     private void resetPassword() {
         //
         // prompt root user to enter username of user whose password needs to be reset
-        //
+        System.out.println("Username: ");
+        String username = in.nextLine();
         // ask root user to confirm intent to reset the password for that username
         //
         // if confirmed...
         //      call database method to reset password for username
         //      print success message
         //
+        if(Utils.confirm(in, "Are you sure you want to reset the pass word for " + username + "?")) {
+        	PowerSchool.updatePassword(username, Utils.getHash(username));
+        	System.out.println("Succesfully reset password for " + username + ".");
+        }
+
     }
     
     /*
