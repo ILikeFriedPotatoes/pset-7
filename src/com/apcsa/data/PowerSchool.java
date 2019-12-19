@@ -258,6 +258,10 @@ public class PowerSchool {
     	try(Connection conn = getConnection();
     		PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
     		
+    		int affected = PowerSchool.resetLastLogin(conn, username);
+    		if (affected != 1) {
+                System.err.println("Unable to update last login (affected rows: " + affected + ").");
+            }
     	} catch (SQLException e) {
     		e.printStackTrace();
     	}
