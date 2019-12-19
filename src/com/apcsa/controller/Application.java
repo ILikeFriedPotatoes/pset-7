@@ -89,6 +89,7 @@ public class Application {
                 if (isFirstLogin() && !activeUser.isRoot()) {
                     // first-time users need to change their passwords from the default provided
                 	changePassword(username, password);
+                	PowerSchool.resetLastLogin(username);
                 }
                 // create and show the user interface
                 //

@@ -253,6 +253,41 @@ public class PowerSchool {
             return -1;
         }
     }
+    
+    private static void resetLastLogin(String username) {
+    	
+    }
+    
+    /**
+     * 
+     * @param conn the current database connection
+     * @param username the user's username
+     * @return the number of affected rows
+     */
+    
+    
+    private static int resetLastLogin(Connection conn, String username) {
+        try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
+
+            conn.setAutoCommit(false);
+            stmt.setString(1, "0000-00-00 00:00:00.000");
+            stmt.setString(2, username);
+
+            if (stmt.executeUpdate() == 1) {
+                conn.commit();
+
+                return 1;
+            } else {
+                conn.rollback();
+
+                return -1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return -1;
+        }
+    }
 
     /*
      * Updates the password for the user.
