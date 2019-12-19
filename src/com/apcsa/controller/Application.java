@@ -87,14 +87,8 @@ public class Application {
                     ? activeUser : null;
 
                 if (isFirstLogin() && !activeUser.isRoot()) {
-                    // first-time users need to change their passwords from the default provided
                 	changePassword(username, password);
-                	PowerSchool.resetLastLogin(username);
                 }
-                // create and show the user interface
-                //
-                // remember, the interface will be difference depending on the type
-                // of user that is logged in (root, administrator, teacher, student)
                 createAndShowUI();
             } else {
                 System.out.println("\nInvalid username and/or password.");
@@ -226,6 +220,7 @@ public class Application {
         //
         if(Utils.confirm(in, "Are you sure you want to reset the pass word for " + username + "?")) {
         	PowerSchool.updatePassword(username, Utils.getHash(username));
+        	PowerSchool.resetLastLogin(username);
         	System.out.println("Succesfully reset password for " + username + ".");
         }
 
