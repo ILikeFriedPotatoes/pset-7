@@ -292,11 +292,11 @@ public class Application {
     		System.out.print("\n::: ");
     		
     		switch(Utils.getInt(in, -1)) {
-    		case 1: return StudentAction.VIEW_GRADES;
-    		case 2: return StudentAction.VIEW_GRADES_COURSE;
-    		case 3: return StudentAction.PASSWORD;
-    		case 4: return StudentAction.LOGOUT;
-    		default: return null;
+	    		case 1: return StudentAction.VIEW_GRADES;
+	    		case 2: return StudentAction.VIEW_GRADES_COURSE;
+	    		case 3: return StudentAction.PASSWORD;
+	    		case 4: return StudentAction.LOGOUT;
+	    		default: return null;
     		}
     }
     
@@ -321,13 +321,7 @@ public class Application {
     /*
      * Determines the user interface for teachers
      */
-    
-    /*
-     * enum TeacherAction {
-    	VIEW_ENROLLMENT, ADD_ASSIGNMENT, DELETE_ASSIGNMENT, ENTER_GRADE, PASSWORD,
-    	LOGOUT
-    }
-     */
+
     private TeacherAction getTeacherMenuSelection() {
     	System.out.println("\n[1] View enrollment by course");
     	System.out.println("[2] Add assignment");
@@ -355,7 +349,7 @@ public class Application {
     private void showAdministratorUI() {
     	while(activeUser != null) {
     		switch(getAdminMenuSelection()) {
-    			case VIEW_FACULTY: break;
+    			case VIEW_FACULTY: viewFaculty(in); break;
     			case VIEW_FACULTY_DEPARTMENT: break;
     			case VIEW_ENROLLMENT: break;
     			case VIEW_ENROLLMENT_GRADE: break;

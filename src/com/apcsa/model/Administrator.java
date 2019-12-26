@@ -1,7 +1,10 @@
 package com.apcsa.model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
+import com.apcsa.data.*;
+import com.apcsa.model.*;
+import java.util.*;
 
 import com.apcsa.model.User;
 
@@ -51,6 +54,20 @@ public class Administrator extends User {
     
     public int getAdministratorId() {
     	return administratorId;
+    }
+    
+    /**
+     * Shows the faculty 
+     */
+    
+    public void viewFaculty(Scanner in) {
+    	ArrayList<String> faculty = new ArrayList<String>();
+    	try (Connection conn = PowerSchool.getConnection();
+    		 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_FACULTY);) {
+    		
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
     
     /**

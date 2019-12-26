@@ -1,17 +1,7 @@
 package com.apcsa.data;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import com.apcsa.controller.Utils;
@@ -218,7 +208,7 @@ public class PowerSchool {
      * @throws SQLException
      */
 
-    private static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(PROTOCOL + DATABASE_URL);
     }
 
