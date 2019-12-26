@@ -218,7 +218,7 @@ public class Application {
         //      call database method to reset password for username
         //      print success message
         //
-        if(Utils.confirm(in, "Are you sure you want to reset the pass word for " + username + "?")) {
+        if(Utils.confirm(in, "\nAre you sure you want to reset the password for " + username + "?")) {
         	PowerSchool.updatePassword(username, Utils.getHash(username));
         	PowerSchool.resetLastLogin(username);
         	System.out.println("Succesfully reset password for " + username + ".");
@@ -263,7 +263,7 @@ public class Application {
      */
 
     private void logout() {
-        if(Utils.confirm(in, "Are you sure you want to logout? (y/n)")) {
+        if(Utils.confirm(in, "\nAre you sure you want to logout? (y/n)")) {
         	activeUser = null;
         }
     }

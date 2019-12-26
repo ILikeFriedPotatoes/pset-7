@@ -254,7 +254,7 @@ public class PowerSchool {
         }
     }
     
-    private static void resetLastLogin(String username) {
+    public static void resetLastLogin(String username) {
     	try(Connection conn = getConnection();
     		PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
     		
