@@ -2,6 +2,7 @@ package com.apcsa.controller;
 
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
+import com.apcsa.model.Administrator;
 import com.apcsa.model.User;
 
 /**
@@ -321,7 +322,7 @@ public class Application {
     /*
      * Determines the user interface for teachers
      */
-
+ 
     private TeacherAction getTeacherMenuSelection() {
     	System.out.println("\n[1] View enrollment by course");
     	System.out.println("[2] Add assignment");
@@ -349,7 +350,7 @@ public class Application {
     private void showAdministratorUI() {
     	while(activeUser != null) {
     		switch(getAdminMenuSelection()) {
-    			case VIEW_FACULTY: viewFaculty(in); break;
+    			case VIEW_FACULTY: Administrator.viewFaculty(); break;
     			case VIEW_FACULTY_DEPARTMENT: break;
     			case VIEW_ENROLLMENT: break;
     			case VIEW_ENROLLMENT_GRADE: break;

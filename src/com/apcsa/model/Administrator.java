@@ -5,6 +5,8 @@ import java.sql.*;
 import com.apcsa.data.*;
 import com.apcsa.model.*;
 import java.util.*;
+import java.util.ArrayList;
+import com.apcsa.data.PowerSchool;
 
 import com.apcsa.model.User;
 
@@ -57,20 +59,6 @@ public class Administrator extends User {
     }
     
     /**
-     * Shows the faculty 
-     */
-    
-    public void viewFaculty(Scanner in) {
-    	ArrayList<String> faculty = new ArrayList<String>();
-    	try (Connection conn = PowerSchool.getConnection();
-    		 PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_FACULTY);) {
-    		
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-    
-    /**
      * @return firstName
      */
     
@@ -94,4 +82,22 @@ public class Administrator extends User {
     	return jobTitle;
     }
     
+    /**
+     * Displays the faculty
+     */
+    
+    public static ArrayList<Teacher> viewFaculty() {
+    	try(Connection conn = PowerSchool.getConnection();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_SQL)	) {
+    		//Make an array list and set it equal to stmt.executeQuery
+    		ArrayList faculty = new ArrayList();
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			
+    			return faculty;
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	//return "Placeholder";
+    }
 }
