@@ -38,6 +38,8 @@ public class Application {
 
     private Scanner in;
     private User activeUser;
+    private String username;
+    private String password;
 
     /**
      * Creates an instance of the Application class, which is responsible for interacting
@@ -73,14 +75,14 @@ public class Application {
      */
     private void showLoginUI() {
     	System.out.print("\nUsername: ");
-        String username = in.next();
+        this.username = in.next();
 
         System.out.print("Password: ");
-        String password = in.next();
+        this.password = in.next();
 
         // if login is successful, update generic user to administrator, teacher, or student
         try {
-            if (login(username, password)) {
+            if (login(this.username, this.password)) {
                 activeUser = activeUser.isAdministrator()
                     ? PowerSchool.getAdministrator(activeUser) : activeUser.isTeacher()
                     ? PowerSchool.getTeacher(activeUser) : activeUser.isStudent()
@@ -88,7 +90,7 @@ public class Application {
                     ? activeUser : null;
 
                 if (isFirstLogin() && !activeUser.isRoot()) {
-                	changePassword(username, password);
+                	changePassword(this.username, this.password);
                 }
                 createAndShowUI();
             } else {
@@ -237,10 +239,10 @@ public class Application {
     	if(!(newPassword.equals(oldPassword))) {
     		System.out.println("Successfully changed password.");
     		activeUser.setPassword(newPassword);
-    		PowerSchool.updatePassword(username, newPassword);
+    		PowerSchool.updatePassword(this.username, newPassword);
     	} else {
     		System.out.println("Please enter in a new password");
-    		changePassword(username, hashedPassword);
+    		changePassword(this.username, hashedPassword);
     	}
     	
     }
@@ -355,7 +357,7 @@ public class Application {
     			case VIEW_ENROLLMENT: break;
     			case VIEW_ENROLLMENT_GRADE: break;
     			case VIEW_ENROLLMENT_COURSE: break;
-    			case PASSWORD: break;
+    			case PASSWORD: changePassword(this.username, this.password); break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
     		}

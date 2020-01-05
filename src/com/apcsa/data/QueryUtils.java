@@ -64,6 +64,9 @@ public class QueryUtils {
         "SELECT * FROM students " +
             "WHERE user_id = ?";
     
+    public static final String GET_TEACHER_IDS_SQL =
+    		"SELECT * FROM TEACHERS";
+    
     public static String GET_FACULTY = 
         "SELECT users.user_id, account_type, username, auth, last_login, teacher_id, first_name, last_name, title, teachers.department_id " + 
             "FROM teachers " + 

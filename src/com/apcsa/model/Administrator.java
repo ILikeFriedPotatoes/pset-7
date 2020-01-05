@@ -86,18 +86,18 @@ public class Administrator extends User {
      * Displays the faculty
      */
     
-    public static ArrayList<Teacher> viewFaculty() {
+    public static void viewFaculty() {
     	try(Connection conn = PowerSchool.getConnection();
-    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_SQL)	) {
-    		//Make an array list and set it equal to stmt.executeQuery
-    		ArrayList faculty = new ArrayList();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_IDS_SQL)	) {
+    		ArrayList<String> faculty = new ArrayList<String>();
     		try(ResultSet rs = stmt.executeQuery()) {
-    			
-    			return faculty;
+    			while(rs.next()) {
+    				faculty.add(rs.getString("last_name") + ", " + rs.getString("first_name") + " / " + "\n");
+    			}
     		}
+    		System.out.println(faculty);
     	} catch(SQLException e) {
     		e.printStackTrace();
     	}
-    	//return "Placeholder";
     }
 }
