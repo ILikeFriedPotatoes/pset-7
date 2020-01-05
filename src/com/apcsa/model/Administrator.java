@@ -88,14 +88,26 @@ public class Administrator extends User {
     
     public static void viewFaculty() {
     	try(Connection conn = PowerSchool.getConnection();
-    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_IDS_SQL)	) {
-    		ArrayList<String> faculty = new ArrayList<String>();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_IDS_SQL);) {
+    		ArrayList<Integer> facultyIds = new ArrayList<Integer>();
+    		ArrayList<String> facultyList = new ArrayList<String>();
     		try(ResultSet rs = stmt.executeQuery()) {
     			while(rs.next()) {
-    				faculty.add(rs.getString("last_name") + ", " + rs.getString("first_name") + " / " + "\n");
+    				facultyIds.add(rs.getInt("teacher_id"));
     			}
     		}
-    		System.out.println(faculty);
+    		for(int i = 0; i < facultyIds.size(); i++) {
+    			String teacher = "";
+    			teacher += (PowerSchool.teacherLastName(facultyIds.get(i)) + ", ");
+    			teacher += (PowerSchool.teacherFirstName(facultyIds.get(i)) + " / ");
+    			int departmentId = PowerSchool.teacherDepartmentId(facultyIds.get(i));
+    			teacher += (PowerSchool.teacherDepartment(departmentId));
+    			facultyList.add(teacher);
+    		}
+    		Collections.sort(facultyList);
+    		for(int i = 0; i < facultyList.size(); i++) {
+    			System.out.print((i + 1) + ". " + facultyList.get(i) + "\n");
+    		}
     	} catch(SQLException e) {
     		e.printStackTrace();
     	}

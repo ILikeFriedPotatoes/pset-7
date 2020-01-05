@@ -67,6 +67,9 @@ public class QueryUtils {
     public static final String GET_TEACHER_IDS_SQL =
     		"SELECT * FROM TEACHERS";
     
+    public static final String GET_DEPARTMENTS_SQL =
+    		"SELECT * FROM DEPARTMENTS";
+    
     public static String GET_FACULTY = 
         "SELECT users.user_id, account_type, username, auth, last_login, teacher_id, first_name, last_name, title, teachers.department_id " + 
             "FROM teachers " + 
@@ -101,4 +104,12 @@ public class QueryUtils {
         "INNER JOIN courses ON course_grades.course_id = courses.course_id " +
         "INNER JOIN students ON students.student_id = course_grades.student_id " +
         "WHERE students.student_id = ?";
+    
+    public static String GET_TEACHER_FROM_ID = 
+    "SELECT * FROM TEACHERS " +
+    	"WHERE teacher_id = ?";
+    
+    public static String GET_DEPARTMENT_BY_ID = 
+    "SELECT * FROM DEPARTMENTS " +
+    	"WHERE DEPARTMENT_ID = ?";
 }

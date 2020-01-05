@@ -355,4 +355,60 @@ public class PowerSchool {
             e.printStackTrace();
         }
     }
+    
+    public static String teacherFirstName(int teacherId) {
+    	try(Connection conn = getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_FROM_ID)) {
+    		stmt.setInt(1, teacherId);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			String firstName = rs.getString("first_name");
+    			return firstName;
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    public static String teacherLastName(int teacherId) {
+    	try(Connection conn = getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_FROM_ID)) {
+    		stmt.setInt(1, teacherId);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			String lastName = rs.getString("last_name");
+    			return lastName;
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    public static String teacherDepartment(int departmentId) {
+    	try(Connection conn = getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_DEPARTMENT_BY_ID)) {
+    		stmt.setInt(1, departmentId);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			String department = rs.getString("title");
+    			return department;
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    public static int teacherDepartmentId(int teacherId) {
+    	try(Connection conn = getConnection();
+    	    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_FROM_ID)) {
+    	    		stmt.setInt(1, teacherId);
+    	    		try(ResultSet rs = stmt.executeQuery()) {
+    	    			int lastName = rs.getInt("department_id");
+    	    			return lastName;
+    	    		}
+    	    	} catch(SQLException e) {
+    	    		e.printStackTrace();
+    	    	}
+    	    	return -1;
+    }
 }
