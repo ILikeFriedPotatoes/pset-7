@@ -355,7 +355,7 @@ public class Application {
     		switch(getAdminMenuSelection()) {
     			case VIEW_FACULTY: Administrator.viewFaculty(); break;
     			case VIEW_FACULTY_DEPARTMENT: viewDepartment(); break;
-    			case VIEW_ENROLLMENT: viewEnrollment(); break;
+    			case VIEW_ENROLLMENT: Administrator.viewEnrollment(); break;
     			case VIEW_ENROLLMENT_GRADE: break;
     			case VIEW_ENROLLMENT_COURSE: break;
     			case PASSWORD: changePassword(this.username, this.password); break;
