@@ -81,6 +81,56 @@ public class Administrator extends User {
     public String getJobTitle() {
     	return jobTitle;
     }
+    /**
+     * Displays the departments
+     */
+    
+    public static ArrayList<String> displayDepartments() {
+    	try(Connection conn = PowerSchool.getConnection();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_DEPARTMENTS_SQL);	) {
+    		ArrayList<String> departments = new ArrayList<String>();
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			while(rs.next()) {
+    				departments.add(rs.getString("title"));
+    			}
+    			for(int i = 0; i < departments.size(); i++) {
+    				System.out.println("[" + (i + 1) + "] " + departments.get(i));
+    			}
+    			System.out.println("\n" + "::: " + "\n");
+    			return departments;
+    		}
+    	} catch (SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
+    public static void getTeacherByDepartments(int departmentId) {
+    	try(Connection conn = PowerSchool.getConnection();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_BY_DEPARTMENT_SQL);) {
+    		stmt.setInt(1, departmentId);
+    		ArrayList<Integer> facultyIds = new ArrayList<Integer>();
+    		ArrayList<String> facultyList = new ArrayList<String>();
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			while(rs.next()) {
+    				facultyIds.add(rs.getInt("teacher_id"));
+    			}
+    		}
+    		for(int i = 0; i < facultyIds.size(); i++) {
+    			String teacher = "";
+    			teacher += (PowerSchool.teacherLastName(facultyIds.get(i)) + ", ");
+    			teacher += (PowerSchool.teacherFirstName(facultyIds.get(i)) + " / ");
+    			teacher += (PowerSchool.teacherDepartment(departmentId));
+    			facultyList.add(teacher);
+    		}
+    		Collections.sort(facultyList);
+    		for(int i = 0; i < facultyList.size(); i++) {
+    			System.out.print((i + 1) + ". " + facultyList.get(i) + "\n");
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
     
     /**
      * Displays the faculty

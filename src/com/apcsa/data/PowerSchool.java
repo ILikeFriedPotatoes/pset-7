@@ -403,8 +403,8 @@ public class PowerSchool {
     	    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_TEACHER_FROM_ID)) {
     	    		stmt.setInt(1, teacherId);
     	    		try(ResultSet rs = stmt.executeQuery()) {
-    	    			int lastName = rs.getInt("department_id");
-    	    			return lastName;
+    	    			int departmentId = rs.getInt("department_id");
+    	    			return departmentId;
     	    		}
     	    	} catch(SQLException e) {
     	    		e.printStackTrace();

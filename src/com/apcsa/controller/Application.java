@@ -1,5 +1,6 @@
 package com.apcsa.controller;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
 import com.apcsa.model.Administrator;
@@ -353,8 +354,8 @@ public class Application {
     	while(activeUser != null) {
     		switch(getAdminMenuSelection()) {
     			case VIEW_FACULTY: Administrator.viewFaculty(); break;
-    			case VIEW_FACULTY_DEPARTMENT: break;
-    			case VIEW_ENROLLMENT: break;
+    			case VIEW_FACULTY_DEPARTMENT: viewDepartment(); break;
+    			case VIEW_ENROLLMENT: viewEnrollment(); break;
     			case VIEW_ENROLLMENT_GRADE: break;
     			case VIEW_ENROLLMENT_COURSE: break;
     			case PASSWORD: changePassword(this.username, this.password); break;
@@ -384,6 +385,16 @@ public class Application {
     		case 7: return AdminAction.LOGOUT;
     		default: return null; 
     	}
+    }
+    
+    private void viewDepartment() {
+    	ArrayList<String> department = Administrator.displayDepartments();
+    	int departmentId = in.nextInt();
+    	if(departmentId < 0 || departmentId > department.size()) {
+    		System.out.println("\nPlease enter a valid department number.\n");
+    		viewDepartment();
+    	}
+    	Administrator.getTeacherByDepartments(departmentId);
     }
     
     /**
