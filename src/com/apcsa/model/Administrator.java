@@ -129,6 +129,21 @@ public class Administrator extends User {
         	return -1;
     }
     
+    private static int studentGPA(int studentId) {
+    	try(Connection conn = PowerSchool.getConnection();
+        		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_FROM_ID)) {
+        		stmt.setInt(1, studentId);
+        		try(ResultSet rs = stmt.executeQuery()) {
+        			int gpa = rs.getInt("gpa");
+        			return gpa;
+        		}
+        	}
+        	catch (SQLException e) {
+        		e.printStackTrace();
+        	}
+        	return -1;
+    }
+    
     public static void viewEnrollment() {
     	try(Connection conn = PowerSchool.getConnection();
     	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_SQL); ) {
@@ -136,10 +151,10 @@ public class Administrator extends User {
     		ArrayList<String> studentList = new ArrayList<String>();
     		try(ResultSet rs = stmt.executeQuery()) {
     			while(rs.next()) {
-    				studentIds.add(rs.getInt("user_id"));
+    				studentIds.add(rs.getInt("student_id"));
     			}
     		}
-    		for(int i = 0; i < studentIds.size(); ) {
+    		for(int i = 0; i < studentIds.size(); i++) {
     			String student = "";
     			student += studentLastName(studentIds.get(i)) + ", ";
     			student += studentFirstName(studentIds.get(i)) + " / ";
@@ -151,6 +166,85 @@ public class Administrator extends User {
     			System.out.print((i + 1) + ". " + studentList.get(i) + "\n");
     		}
     	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    public static void viewEnrollmentGrade(int gradeLevel) {
+    	try(Connection conn = PowerSchool.getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_BY_GRADE); ) {
+    		stmt.setInt(1, gradeLevel);
+    		ArrayList<Integer> studentIds = new ArrayList<Integer>();
+    		ArrayList<String> studentList = new ArrayList<String>();
+    		try(ResultSet rs= stmt.executeQuery()) {
+    			while(rs.next()) {
+    				studentIds.add(rs.getInt("student_id"));
+    			}
+    		}
+    		Collections.sort(studentList);
+    		for(int i = 0; i < studentIds.size(); i ++) {
+    			String student = "";
+    			student += studentLastName(studentIds.get(i)) + ", ";
+    			student += studentFirstName(studentIds.get(i)) + " / ";
+    			if(-1 == studentGPA(studentIds.get(i))) {
+    				student += "#0";
+    			} else {
+        			student += studentGPA(studentIds.get(i));
+    			}
+    			studentList.add(student);
+    		}
+    		Collections.sort(studentList);
+    		for(int i = 0; i < studentList.size(); i ++) {
+    			System.out.print((i+1) + ". " + studentList.get(i) + "\n"); 
+    		}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    public static void viewCourseNumber(String courseNumber) {
+    	try(Connection conn = PowerSchool.getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_ID);
+    	PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_COURSE);) {
+    		stmt.setString(1, courseNumber);
+    		ArrayList<Integer> courseIds = new ArrayList<Integer>();
+    		ArrayList<Integer> studentIdsWithDuplicates = new ArrayList<Integer>();
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			while(rs.next()) {
+    				courseIds.add(rs.getInt("course_id"));
+    			}
+    		}
+    		for(int i = 0; i < courseIds.size(); i ++) {
+    			stmt2.setInt(1, courseIds.get(i));
+        		try(ResultSet rs2 = stmt2.executeQuery()) {
+        			while(rs2.next()) {
+        				studentIdsWithDuplicates.add(rs2.getInt("student_id"));
+        			}
+        		}
+    		}
+    		ArrayList<Integer> studentIds = new ArrayList<Integer>();
+    		ArrayList<String> studentList = new ArrayList<String>();
+    		for(int i = 0; i < studentIdsWithDuplicates.size(); i ++) {
+    			if(!studentIds.contains(studentIdsWithDuplicates.get(i))) {
+    				studentIds.add(studentIdsWithDuplicates.get(i));
+    			}
+    		}
+    		for(int i = 0; i < studentIds.size(); i ++) {
+    			String student = "";
+    			student += studentLastName(studentIds.get(i)) + ", ";
+    			student += studentFirstName(studentIds.get(i)) + " / ";
+    			if(-1 == studentGPA(studentIds.get(i))) {
+    				student += "--";
+    			} else {
+        			student += studentGPA(studentIds.get(i));
+    			}
+    			studentList.add(student);
+    		}
+    		Collections.sort(studentList);
+    		for(int i = 0; i < studentList.size(); i ++) {
+    			System.out.print((i+1) + ". " + studentList.get(i) + "\n"); 
+    		}
+    	} catch(SQLException e) {
     		e.printStackTrace();
     	}
     }

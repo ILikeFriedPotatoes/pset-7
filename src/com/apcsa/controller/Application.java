@@ -356,8 +356,8 @@ public class Application {
     			case VIEW_FACULTY: Administrator.viewFaculty(); break;
     			case VIEW_FACULTY_DEPARTMENT: viewDepartment(); break;
     			case VIEW_ENROLLMENT: Administrator.viewEnrollment(); break;
-    			case VIEW_ENROLLMENT_GRADE: break;
-    			case VIEW_ENROLLMENT_COURSE: break;
+    			case VIEW_ENROLLMENT_GRADE: viewEnrollmentGrade(); break;
+    			case VIEW_ENROLLMENT_COURSE: viewEnrollmentCourse(); break;
     			case PASSWORD: changePassword(this.username, this.password); break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
@@ -385,6 +385,30 @@ public class Application {
     		case 7: return AdminAction.LOGOUT;
     		default: return null; 
     	}
+    }
+    
+    private void viewEnrollmentCourse() {
+    	System.out.println("\nCourse No.: ");
+    	String courseNumber = in.nextLine();
+    	Administrator.viewCourseNumber(courseNumber);
+    }
+    
+    private void viewEnrollmentGrade() {
+    	System.out.println("\nChoose a grade level.\n");
+    	System.out.println("[1] Freshman.");
+    	System.out.println("[2] Sophomore.");
+    	System.out.println("[3] Junior.");
+    	System.out.println("[4] Senior.\n");
+		int grade = in.nextInt();
+		in.nextLine();
+		System.out.println();
+		grade = (grade == 4) ? 12: (grade == 3) ? 11 :
+		(grade == 2) ? 10 : (grade == 1) ? 9 : -1;
+		if(grade == -1) {
+			System.out.println("\nPlease enter a valid option (1-4).");
+			viewEnrollmentGrade();
+		}
+    	Administrator.viewEnrollmentGrade(grade);
     }
     
     private void viewDepartment() {

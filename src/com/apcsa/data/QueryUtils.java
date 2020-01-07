@@ -76,10 +76,22 @@ public class QueryUtils {
     	"WHERE DEPARTMENT_ID = ?";
     
     public static final String GET_DEPARTMENTS_SQL =
-    		"SELECT * FROM DEPARTMENTS";
+    "SELECT * FROM DEPARTMENTS";
     
     public static final String GET_TEACHER_IDS_SQL =
-    		"SELECT * FROM TEACHERS";
+    "SELECT * FROM TEACHERS";
+    
+    public static final String GET_ENROLLMENT_BY_GRADE =
+    "SELECT * FROM STUDENTS " +
+    	"WHERE GRADE_LEVEL = ?";
+    
+    public static final String GET_ENROLLMENT_ID = 
+    "SELECT * FROM COURSES " +
+    	"WHERE COURSE_NO = ?";
+    
+    public static final String GET_STUDENT_ID_FROM_COURSE =
+    "SELECT * FROM COURSE_GRADES " +
+    	"WHERE COURSE_ID = ?";
     
     /*
      * Retrieves a student associated with a user account.
