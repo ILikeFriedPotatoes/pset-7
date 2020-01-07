@@ -63,10 +63,23 @@ public class QueryUtils {
     public static final String GET_STUDENT_SQL =
         "SELECT * FROM students " +
             "WHERE user_id = ?";
+<<<<<<< HEAD
 
     public static String GET_FACULTY =
         "SELECT users.user_id, account_type, username, auth, last_login, teacher_id, first_name, last_name, title, teachers.department_id " +
             "FROM teachers " +
+=======
+    
+    public static final String GET_TEACHER_IDS_SQL =
+    		"SELECT * FROM TEACHERS";
+    
+    public static final String GET_DEPARTMENTS_SQL =
+    		"SELECT * FROM DEPARTMENTS";
+    
+    public static String GET_FACULTY = 
+        "SELECT users.user_id, account_type, username, auth, last_login, teacher_id, first_name, last_name, title, teachers.department_id " + 
+            "FROM teachers " + 
+>>>>>>> 641a24bab06a4512283cfa30c48c276426a3081e
             "INNER JOIN users ON teachers.user_id=users.user_id " +
             "INNER JOIN departments " +
             "ON teachers.department_id=departments.department_id";
@@ -98,6 +111,7 @@ public class QueryUtils {
         "INNER JOIN courses ON course_grades.course_id = courses.course_id " +
         "INNER JOIN students ON students.student_id = course_grades.student_id " +
         "WHERE students.student_id = ?";
+<<<<<<< HEAD
 
 
     public static String GET_TEACHER_COURSES =
@@ -107,3 +121,25 @@ public class QueryUtils {
     "SELECT * FROM students LEFT OUTER JOIN course_grades ON students.student_ID = course_grades.student_id INNER JOIN courses ON courses.course_id = course_grades.course_id OUTER LEFT JOIN users ON users.user_id = students.student_id WHERE courses.course_id = ?";
 
 }
+=======
+    
+    public static String GET_TEACHER_FROM_ID = 
+    "SELECT * FROM TEACHERS " +
+    	"WHERE teacher_id = ?";
+    
+    public static String GET_DEPARTMENT_BY_ID = 
+    "SELECT * FROM DEPARTMENTS " +
+    	"WHERE DEPARTMENT_ID = ?";
+    
+    public static String GET_ENROLLMENT_SQL = 
+    "SELECT * FROM STUDENTS";
+    
+    public static String GET_ENROLLMENT_FROM_ID =
+    "SELECT * FROM STUDENTS " + 
+    	"WHERE STUDENT_ID = ?";
+    
+    public static String GET_TEACHER_BY_DEPARTMENT_SQL =
+    "SELECT * FROM TEACHERS " + 
+    	"WHERE DEPARTMENT_ID = ?";
+}
+>>>>>>> 641a24bab06a4512283cfa30c48c276426a3081e

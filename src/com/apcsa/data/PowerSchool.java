@@ -354,5 +354,5 @@ public class PowerSchool {
             System.err.println("Error: Unable to execute SQL script from configuration file.");
             e.printStackTrace();
         }
-    }
+    }   
 }
