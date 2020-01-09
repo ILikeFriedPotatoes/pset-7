@@ -288,7 +288,7 @@ public class Application {
     	while(activeUser != null) {
     		switch(getStudentMenuSelection()) {
     			case VIEW_GRADES: viewGrades(); break;
-    			case VIEW_GRADES_COURSE: viewAssignmentGradesByCourse(in); break;
+    			case VIEW_GRADES_COURSE: viewAssignmentGradesByCourse(); break;
     			case PASSWORD: break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
@@ -359,100 +359,48 @@ public class Application {
     	}
     }
     
-	public void viewAssignmentGradesByCourse(Scanner in) {
+	public void viewAssignmentGradesByCourse() {
 		System.out.print("\n");
 		ArrayList<String> course_nos = new ArrayList<String>();
-		ArrayList<String> course_ids = new ArrayList<String>();
-		
-		int count = 1;
-		int input = 0;
+		ArrayList<Integer> course_ids = new ArrayList<Integer>();
 		int selection = 0;
-		String selectionString = "";
 		
     	int userId = activeUser.getUserId();
-    	int studentId;
+    	int studentId = 0;
 		
-		try (Connection conn = PowerSchool.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_COURSES);
-			PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_STUDENT_ENROLLMENT_BY_COURSE_ID);
-			PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_STUDENT_ENROLLMENT_BY_COURSE_NO);
-			stmt.setInt(1, StudentId);
+		try (Connection conn = PowerSchool.getConnection();
+			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_USER_ID);
+			PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSE_GRADES_FROM_STUDENT_ID);
+			PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_COURSE_ID)) {
+			
+			stmt.setInt(1, userId);
 			try (ResultSet rs = stmt.executeQuery()) {
-				while (rs.next()) {
-					System.out.println("[" + count + "] " + rs.getString("course_no"));
-					count++;
-					course_nos.add(rs.getString("course_no"));
-					course_ids.add(rs.getString("course_id"));
-				}
-			} catch (SQLException e) {
-				System.out.println(e);
+				studentId = rs.getInt("student_id");
 			}
-		} catch (SQLException e) {
-			System.out.println(e);
-		}
-
-		try {
-			input = in.nextInt();
-		} catch (InputMismatchException e) {
-			System.out.println("\nYour input was invalid. Please try again.");
-		} finally {
-			in.nextLine();
-		}
-
-		System.out.println("\n[1] MP1 Assignment.");
-		System.out.println("[2] MP2 Assignment.");
-		System.out.println("[3] MP3 Assignment.");
-		System.out.println("[4] MP4 Assignment.");
-		System.out.println("[5] Midterm Exam.");
-		System.out.println("[6] Final Exam.");
-
-
-		try {
-			selection = in.nextInt();
-		} catch (InputMismatchException e) {
-			System.out.println(e);
-		} finally {
-			in.nextLine();
-		}
-
-		switch (selection) {
-			case 1:
-				selectionString = "mp1";
-				break;
-			case 2:
-				selectionString = "mp2";
-				break;
-			case 3:
-				selectionString = "mp3";
-				break;
-			case 4:
-				selectionString = "mp4";
-				break;
-			case 5:
-				selectionString = "midterm_exam";
-				break;
-			case 6:
-				selectionString = "final_exam";
-		}
-
-
-
-		try (Connection conn = PowerSchool.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM assignment_grades INNER JOIN assignments ON assignment_grades.assignment_id = assignments.assignment_id WHERE student_id = ? AND assignment_grades.course_id = ?");
-			stmt.setInt(1, this.getStudentId());
-			stmt.setString(2, course_ids.get(input - 1));
-			try (ResultSet rs = stmt.executeQuery()) {
-				System.out.print("\n");
-				int assignmentCount = 1;
-				while (rs.next()) {
-					System.out.printf("%d. %s / %d (out of %d pts)", assignmentCount, rs.getString("title"), rs.getInt("points_earned"), rs.getInt("points_possible"));
-					assignmentCount++;
+			stmt2.setInt(1, studentId);
+			try(ResultSet rs2 = stmt2.executeQuery()) {
+				while(rs2.next()) {
+					course_ids.add(rs2.getInt("course_id"));
 				}
 			}
+			for(int i = 0; i < course_ids.size(); i++) {
+				stmt3.setInt(1, course_ids.get(i));
+				try(ResultSet rs3 = stmt3.executeQuery()) {
+					course_nos.add(rs3.getString("course_no"));
+				}
+			}
+			for(int i = 0; i < course_nos.size(); i ++) {
+				System.out.println(course_nos.get(i));
+			}
+			System.out.println("\n[1] MP1 Assignment.");
+			System.out.println("[2] MP2 Assignment.");
+			System.out.println("[3] MP3 Assignment.");
+			System.out.println("[4] MP4 Assignment.");
+			System.out.println("[5] Midterm Exam.");
+			System.out.println("[6] Final Exam.");
 		} catch (SQLException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
-		System.out.print("\n");
 	}
 
     

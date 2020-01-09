@@ -108,6 +108,10 @@ public class QueryUtils {
     public static final String GET_COURSES_FROM_COURSE_ID = 
     "SELECT * FROM COURSES " +
     	"WHERE COURSE_ID = ?";
+    
+    public static final String GET_COURSE_GRADES_FROM_STUDENT_ID = 
+    "SELECT * FROM COURSE_GRADES " +
+    	"WHERE STUDENT_ID = ?";
     /*
      * Retrieves a student associated with a user account.
      */
