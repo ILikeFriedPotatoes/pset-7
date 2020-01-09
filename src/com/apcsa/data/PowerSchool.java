@@ -4,6 +4,9 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 import com.apcsa.controller.Utils;
 import com.apcsa.model.Administrator;
 import com.apcsa.model.Student;
@@ -303,6 +306,7 @@ public class PowerSchool {
             return -1;
         }
     }
+
 
     /*
      * Updates the password for the user.
