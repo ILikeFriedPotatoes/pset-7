@@ -244,6 +244,17 @@ public class Application {
     	
     }
     
+    private void updatePassword(String username, String hashedPassword) {
+    	System.out.println("\nEnter current password: ");
+    	String oldPassword = Utils.getHash(in.next());
+    	if(oldPassword.equals(hashedPassword)) {
+    		System.out.println("Enter new password.");
+    		String newPassword = Utils.getHash(in.next());
+    		activeUser.setPassword(newPassword);
+    		PowerSchool.updatePassword(username, newPassword);
+    	}
+    }
+    
     /*
      * Resets the database to its factory settings.
      */
