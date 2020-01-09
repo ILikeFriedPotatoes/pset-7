@@ -3,8 +3,11 @@ package com.apcsa.controller;
 import java.util.ArrayList;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
+import com.apcsa.data.QueryUtils;
 import com.apcsa.model.Administrator;
 import com.apcsa.model.User;
+import com.apcsa.model.Student;
+import java.sql.*;
 
 /**
  * 
@@ -212,16 +215,9 @@ public class Application {
      */
 
     private void resetPassword() {
-        //
-        // prompt root user to enter username of user whose password needs to be reset
-        System.out.println("Username: ");
+        System.out.println("\nUsername: ");
         String username = in.nextLine();
-        // ask root user to confirm intent to reset the password for that username
-        //
-        // if confirmed...
-        //      call database method to reset password for username
-        //      print success message
-        //
+        User forgetfulUser = PowerSchool.resetUserPassword(username);
         if(Utils.confirm(in, "\nAre you sure you want to reset the password for " + username + "?")) {
         	PowerSchool.updatePassword(username, Utils.getHash(username));
         	PowerSchool.resetLastLogin(username);
@@ -267,7 +263,7 @@ public class Application {
      */
 
     private void logout() {
-        if(Utils.confirm(in, "\nAre you sure you want to logout? (y/n)")) {
+        if(Utils.confirm(in, "\nAre you sure you want to logout? (y/n) ")) {
         	activeUser = null;
         }
     }
@@ -279,7 +275,7 @@ public class Application {
     private void showStudentUI() {
     	while(activeUser != null) {
     		switch(getStudentMenuSelection()) {
-    			case VIEW_GRADES: break;
+    			case VIEW_GRADES: viewGrades(); break;
     			case VIEW_GRADES_COURSE: break;
     			case PASSWORD: break;
     			case LOGOUT: logout(); break;
@@ -302,6 +298,53 @@ public class Application {
 	    		case 4: return StudentAction.LOGOUT;
 	    		default: return null;
     		}
+    }
+    
+    private void viewGrades() {
+    	int userId = activeUser.getUserId();
+    	int studentId;
+    	try(Connection conn = PowerSchool.getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_USER_ID);
+    	PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_STUDENT_ID);
+    	PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_COURSE_ID);) {
+    		stmt.setInt(1, userId);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			studentId = rs.getInt("student_id");
+    		}
+    		ArrayList<Integer> studentIds = new ArrayList<Integer>();
+    		ArrayList<String> studentCourses = new ArrayList<String>();
+    		ArrayList<Float> studentGrades = new ArrayList<Float>();
+    		stmt2.setInt(1, studentId);
+    		try(ResultSet rs2 = stmt2.executeQuery()) {
+    			while(rs2.next()) {
+    				studentIds.add(rs2.getInt("course_id"));
+    			}
+    		}
+    		try(ResultSet rs4 = stmt2.executeQuery()) {
+    			while(rs4.next()) {
+    				studentGrades.add(rs4.getFloat("grade"));
+    			}
+    		}
+    		for(int i = 0; i < studentIds.size(); i++) {
+    			stmt3.setInt(1, studentIds.get(i));
+    			try(ResultSet rs3 = stmt3.executeQuery()) {
+    				while(rs3.next()) {
+    					studentCourses.add(rs3.getString("title"));
+    				}
+    			}
+    		}
+    		System.out.println("");
+    		for(int i = 0; i < studentCourses.size(); i++) {
+    			System.out.print((i+1) + ". " + studentCourses.get(i) + " / ");
+    			if(studentGrades.get(i) == 0) {
+    				System.out.println("--");
+    			} else {
+    				System.out.println(studentGrades.get(i));
+    			}
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
     }
     
     /**

@@ -67,6 +67,10 @@ public class QueryUtils {
     public static String GET_ENROLLMENT_SQL = 
     "SELECT * FROM STUDENTS";
     
+    public static String GET_USERS_FROM_USERNAME = 
+    "SELECT * FROM USERS " +
+    "WHERE username = ?";
+    
     public static String GET_ENROLLMENT_FROM_ID =
     "SELECT * FROM STUDENTS " + 
     	"WHERE STUDENT_ID = ?";
@@ -93,6 +97,17 @@ public class QueryUtils {
     "SELECT * FROM COURSE_GRADES " +
     	"WHERE COURSE_ID = ?";
     
+    public static final String GET_COURSES_FROM_STUDENT_ID =
+    "SELECT * FROM COURSE_GRADES " +
+    	"WHERE STUDENT_ID = ?";
+    
+    public static final String GET_STUDENT_ID_FROM_USER_ID =
+    "SELECT * FROM STUDENTS " +
+    	"WHERE USER_ID = ?";
+    
+    public static final String GET_COURSES_FROM_COURSE_ID = 
+    "SELECT * FROM COURSES " +
+    	"WHERE COURSE_ID = ?";
     /*
      * Retrieves a student associated with a user account.
      */

@@ -59,5 +59,9 @@ public class Student extends User {
 	public int getGradeLevel() {
 		return this.gradeLevel;
 	}
+	
+	public int getStudentId() {
+		return studentId;
+	}
 
 }

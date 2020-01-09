@@ -50,7 +50,23 @@ public class PowerSchool {
             }
         }
     }
+    /**
+     * Retrieves the user the root user is trying to reset the password for.
+     */
 
+    public static User resetUserPassword(String username) {
+    	try (Connection conn = getConnection();
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_USERS_FROM_USERNAME)) {
+    		stmt.setString(1, username);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			return new User(rs);
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	return null;
+    }
+    
     /**
      * Retrieves the User object associated with the requested login.
      *
@@ -70,7 +86,6 @@ public class PowerSchool {
                 if (rs.next()) {
                     Timestamp ts = new Timestamp(new Date().getTime());
                     int affected = PowerSchool.updateLastLogin(conn, username, ts);
-
                     if (affected != 1) {
                         System.err.println("Unable to update last login (affected rows: " + affected + ").");
                     }
@@ -222,7 +237,7 @@ public class PowerSchool {
      */
 
     private static int updateLastLogin(Connection conn, String username, Timestamp ts) {
-        try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
+    	try (PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
 
             conn.setAutoCommit(false);
             stmt.setString(1, ts.toString());
@@ -247,7 +262,8 @@ public class PowerSchool {
     public static void resetLastLogin(String username) {
     	try(Connection conn = getConnection();
     		PreparedStatement stmt = conn.prepareStatement(QueryUtils.UPDATE_LAST_LOGIN_SQL)) {
-    		
+    		stmt.setString(1, "0000-00-00 00:00:00.000");
+    		stmt.setString(2, username);
     		int affected = PowerSchool.resetLastLogin(conn, username);
     		if (affected != 1) {
                 System.err.println("Unable to update last login (affected rows: " + affected + ").");
