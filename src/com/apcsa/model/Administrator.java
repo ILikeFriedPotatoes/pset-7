@@ -204,8 +204,8 @@ public class Administrator extends User {
     
     public static void viewCourseNumber(String courseNumber) {
     	try(Connection conn = PowerSchool.getConnection();
-    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_ID);
-    	PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_COURSE);) {
+    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_WITH_COURSE_NO);
+    	PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSE_GRADES_FROM_COURSE_IDS);) {
     		stmt.setString(1, courseNumber);
     		ArrayList<Integer> courseIds = new ArrayList<Integer>();
     		ArrayList<Integer> studentIdsWithDuplicates = new ArrayList<Integer>();

@@ -1,6 +1,7 @@
 package com.apcsa.controller;
 
 import java.util.ArrayList;
+import java.util.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import com.apcsa.data.PowerSchool;
@@ -84,7 +85,6 @@ public class Application {
 
         System.out.print("Password: ");
         this.password = in.next();
-
         // if login is successful, update generic user to administrator, teacher, or student
         try {
             if (login(this.username, this.password)) {
@@ -245,10 +245,20 @@ public class Application {
     	
     }
     
-    private void updatePassword(String username, String hashedPassword) {
+    private void updatePassword(String username) {
     	System.out.println("\nEnter current password: ");
-    	String oldPassword = Utils.getHash(in.next());
-    	if(oldPassword.equals(hashedPassword)) {
+    	String oldPasswordConfirm = Utils.getHash(in.next());
+    	String oldPassword = "";
+    	try(Connection conn = PowerSchool.getConnection();
+    		PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_USERS_WITH_USERNAME)) {
+    		stmt.setString(1, username);
+    		try(ResultSet rs = stmt.executeQuery()) {
+    			oldPassword = rs.getString("auth");
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	if(oldPasswordConfirm.equals(oldPassword)) {
     		System.out.println("Enter new password.");
     		String newPassword = Utils.getHash(in.next());
     		activeUser.setPassword(newPassword);
@@ -289,7 +299,7 @@ public class Application {
     		switch(getStudentMenuSelection()) {
     			case VIEW_GRADES: viewGrades(); break;
     			case VIEW_GRADES_COURSE: viewAssignmentGradesByCourse(); break;
-    			case PASSWORD: break;
+    			case PASSWORD: updatePassword(activeUser.getUsername()); break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
     		}
@@ -363,7 +373,6 @@ public class Application {
 		System.out.print("\n");
 		ArrayList<String> course_nos = new ArrayList<String>();
 		ArrayList<Integer> course_ids = new ArrayList<Integer>();
-		int selection = 0;
 		
     	int userId = activeUser.getUserId();
     	int studentId = 0;
@@ -371,7 +380,8 @@ public class Application {
 		try (Connection conn = PowerSchool.getConnection();
 			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_USER_ID);
 			PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSE_GRADES_FROM_STUDENT_ID);
-			PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_COURSE_ID)) {
+			PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_COURSE_ID);
+			PreparedStatement stmt4 = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_GRADES_FROM_STUDENT_ID_AND_COURSE_ID);) {
 			
 			stmt.setInt(1, userId);
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -389,15 +399,35 @@ public class Application {
 					course_nos.add(rs3.getString("course_no"));
 				}
 			}
+			System.out.println("Choose a course.\n");
 			for(int i = 0; i < course_nos.size(); i ++) {
-				System.out.println(course_nos.get(i));
+				System.out.println("[" + (i+1) + "] " + course_nos.get(i));
 			}
+			System.out.print("\n::: ");
+			int option = in.nextInt();
+			in.nextLine();
+			int individualCourseId = course_ids.get(option);
+			stmt4.setInt(1, individualCourseId);
+			stmt4.setInt(2, studentId);
+			
 			System.out.println("\n[1] MP1 Assignment.");
 			System.out.println("[2] MP2 Assignment.");
 			System.out.println("[3] MP3 Assignment.");
 			System.out.println("[4] MP4 Assignment.");
 			System.out.println("[5] Midterm Exam.");
 			System.out.println("[6] Final Exam.");
+			
+			ArrayList<Integer> pointsEarned = new ArrayList<Integer>();
+			ArrayList<Integer> pointsPossible = new ArrayList<Integer>();
+			ArrayList<String> courseTitle = new ArrayList<String>();
+			ArrayList<Integer> courseId = new ArrayList<Integer>();
+			try(ResultSet courseGrades = stmt4.executeQuery()) {
+				while(courseGrades.next() ) {
+					pointsEarned.add(courseGrades.getInt("points_earned"));
+					pointsPossible.add(courseGrades.getInt("points_possible"));
+				}
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -417,15 +447,89 @@ public class Application {
     private void showTeacherUI() {
     	while(activeUser!= null) {
     		switch(getTeacherMenuSelection()) {
-	    		case VIEW_ENROLLMENT: break;
-	    		case ADD_ASSIGNMENT: break;
+	    		case VIEW_ENROLLMENT: viewEnrollment(); break;
+	    		case ADD_ASSIGNMENT: addAssignment(); break;
 	    		case DELETE_ASSIGNMENT: break;
 	    		case ENTER_GRADE: break;
-	    		case PASSWORD: break;
+	    		case PASSWORD: updatePassword(activeUser.getUsername()); break;
 	    		case LOGOUT: logout(); break;
 	    		default: System.out.println("\nInvalid selection."); break;
     		}
     	}
+    }
+    /*
+	* Let's the teacher view the grades of his or her students
+	*/
+    
+    private void viewEnrollment() {
+    	int userId = activeUser.getUserId();
+    	int teacherId = 0;
+    	ArrayList<String> courseNumbers = new ArrayList<String>();
+    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
+    	ArrayList<String> studentFirstName = new ArrayList<String>();
+    	ArrayList<String> studentLastName = new ArrayList<String>();
+    	ArrayList<Integer> studentGrade = new ArrayList<Integer>();
+    	try (Connection conn = PowerSchool.getConnection();
+    		PreparedStatement getCoursesFromCourseId = conn.prepareStatement(QueryUtils.TEACHER_VIEW_ENROLLMENT);
+    		PreparedStatement getTeacherId = conn.prepareStatement(QueryUtils.GET_TEACHER_ID_FROM_USER_ID );
+    		PreparedStatement getCourseTitles = conn.prepareStatement(QueryUtils.GET_COURSE_TITLES);) {
+    		
+    		getTeacherId.setInt(1, userId);
+    		try(ResultSet teacherIdRs = getTeacherId.executeQuery()) {
+    			teacherId = teacherIdRs.getInt("teacher_id");
+    		}
+    		getCourseTitles.setInt(1, teacherId);
+    		try(ResultSet courseTitles = getCourseTitles.executeQuery()) {
+    			while(courseTitles.next()) {
+    				courseNumbers.add(courseTitles.getString("course_no"));
+    				courseIds.add(courseTitles.getInt("course_id"));
+    			}
+    		}
+    		System.out.println();
+    		for(int i = 0; i < courseNumbers.size(); i ++) {
+    			System.out.println("[" + (i+1) + "] " + courseNumbers.get(i));
+    		}
+    		System.out.print("\n::: ");
+    		int selectionNumber = in.nextInt();
+    		in.nextLine();
+    		if(selectionNumber > courseNumbers.size() || selectionNumber < 0) {
+    			System.out.println("Invalid selection.");
+    			showTeacherUI();
+    		}
+    		getCoursesFromCourseId.setInt(1, courseIds.get(selectionNumber - 1));
+    		try(ResultSet courses = getCoursesFromCourseId.executeQuery()) {
+    			while(courses.next()) {
+    				studentFirstName.add(courses.getString("first_Name"));
+    				studentLastName.add(courses.getString("last_name"));
+    				studentGrade.add(courses.getInt("grade"));
+    			}
+    		}
+    		System.out.println();
+    		ArrayList<String> finalArrayList = new ArrayList<String>();
+    		for(int i = 0; i < studentFirstName.size(); i++) {
+    			finalArrayList.add(studentLastName.get(i) + ", "
+    			 + studentFirstName.get(i) + " / ");
+	    		if(studentGrade.get(i) == 0) {
+	    			finalArrayList.set(i, finalArrayList.get(i) + "--");
+	    		} else {
+	    			finalArrayList.set(i, finalArrayList.get(i) + Integer.toString(studentGrade.get(i)));
+    			}
+    		}
+    		Collections.sort(finalArrayList);
+    		for(int i = 0; i < finalArrayList.size(); i++) {
+    			System.out.println((i+1) + ". " + finalArrayList.get(i));
+    		}
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    /*
+	* Let's the teacher add an assignment
+	*/
+    
+    private void addAssignment() {
+    
     }
     
     /*
@@ -464,7 +568,7 @@ public class Application {
     			case VIEW_ENROLLMENT: Administrator.viewEnrollment(); break;
     			case VIEW_ENROLLMENT_GRADE: viewEnrollmentGrade(); break;
     			case VIEW_ENROLLMENT_COURSE: viewEnrollmentCourse(); break;
-    			case PASSWORD: changePassword(this.username, this.password); break;
+    			case PASSWORD: updatePassword(activeUser.getUsername()); break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
     		}
@@ -489,7 +593,7 @@ public class Application {
     		case 5: return AdminAction.VIEW_ENROLLMENT_COURSE;
     		case 6: return AdminAction.PASSWORD;
     		case 7: return AdminAction.LOGOUT;
-    		default: return null; 
+    		default: return null;
     	}
     }
     

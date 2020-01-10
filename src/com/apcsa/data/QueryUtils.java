@@ -89,11 +89,16 @@ public class QueryUtils {
     "SELECT * FROM STUDENTS " +
     	"WHERE GRADE_LEVEL = ?";
     
-    public static final String GET_ENROLLMENT_ID = 
+    public static final String GET_ENROLLMENT_WITH_COURSE_NO = 
     "SELECT * FROM COURSES " +
     	"WHERE COURSE_NO = ?";
     
-    public static final String GET_STUDENT_ID_FROM_COURSE =
+    public static final String GET_ASSIGNMENT_GRADES_FROM_STUDENT_ID_AND_COURSE_ID =
+    "SELECT * FROM ASSIGNMENT_GRADES " +
+    	"WHERE COURSE_ID = ?" + 
+    	"AND STUDENT_ID = ?";
+    
+    public static final String GET_COURSE_GRADES_FROM_COURSE_IDS =
     "SELECT * FROM COURSE_GRADES " +
     	"WHERE COURSE_ID = ?";
     
@@ -105,9 +110,30 @@ public class QueryUtils {
     "SELECT * FROM STUDENTS " +
     	"WHERE USER_ID = ?";
     
+    public static final String GET_USERS_WITH_USERNAME = 
+    "SELECT * FROM USERS " +
+    	"WHERE USERNAME = ?";
+    
     public static final String GET_COURSES_FROM_COURSE_ID = 
     "SELECT * FROM COURSES " +
     	"WHERE COURSE_ID = ?";
+    
+    public static final String TEACHER_VIEW_ENROLLMENT = 
+    "SELECT STUDENTS.first_name, STUDENTS.last_name, COURSE_GRADES.grade FROM COURSE_GRADES " +
+    	"INNER JOIN STUDENTS ON COURSE_GRADES.STUDENT_ID=STUDENTS.STUDENT_ID"
+    	+ " WHERE COURSE_ID = ?";
+
+    public static final String GET_TEACHER_ID_FROM_USER_ID =
+    	"SELECT TEACHERS.TEACHER_ID FROM TEACHERS "
+    	+ "WHERE USER_ID = ?";
+    
+    public static final String GET_COURSE_TITLES = 
+    "SELECT COURSES.COURSE_NO, COURSES.COURSE_ID FROM COURSES "
+    + "WHERE TEACHER_ID = ?";
+    		
+    public static final String GET_COURSES_FROM_TEACHER_ID = 
+    "SELECT * FROM COURSES " +
+    	"WHERE TEACHER_ID = ?";
     
     public static final String GET_COURSE_GRADES_FROM_STUDENT_ID = 
     "SELECT * FROM COURSE_GRADES " +
