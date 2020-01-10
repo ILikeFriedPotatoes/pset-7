@@ -9,6 +9,8 @@ import com.apcsa.data.QueryUtils;
 import com.apcsa.model.Administrator;
 import com.apcsa.model.User;
 import com.apcsa.model.Student;
+import com.apcsa.model.Teacher;
+
 import java.sql.*;
 
 /**
@@ -230,6 +232,7 @@ public class Application {
     /*
      * Asks a user to change his or her password
      */
+    
     private void changePassword(String username, String hashedPassword) {
     	System.out.println("\nEnter new password: ");
     	String newPassword = Utils.getHash(in.next());
@@ -432,13 +435,6 @@ public class Application {
 			e.printStackTrace();
 		}
 	}
-
-    
-    /**
-     * Displays interface for Student ID
-     */
-    
-
     
     /**
      *  Displays the interface for teacher users
@@ -529,7 +525,113 @@ public class Application {
 	*/
     
     private void addAssignment() {
-    
+    	int userId = activeUser.getUserId();
+    	int teacherId = 0;
+    	ArrayList<String> courseNumbers = new ArrayList<String>();
+    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
+    	try(Connection conn = PowerSchool.getConnection();
+    		PreparedStatement getTeacherId = conn.prepareStatement(QueryUtils.GET_TEACHER_ID_FROM_USER_ID);
+    		PreparedStatement getCourseTitles = conn.prepareStatement(QueryUtils.GET_COURSE_TITLES);
+    		PreparedStatement addAssignment = conn.prepareStatement(QueryUtils.ADD_ASSIGNMENTS);) {
+    		getTeacherId.setInt(1, userId);
+    		try(ResultSet teacherIdRs = getTeacherId.executeQuery()) {
+    			teacherId = teacherIdRs.getInt("teacher_id");
+    		}
+    		getCourseTitles.setInt(1, teacherId);
+    		try(ResultSet courseTitles = getCourseTitles.executeQuery()) {
+    			while(courseTitles.next()) {
+    				courseNumbers.add(courseTitles.getString("course_no"));
+    				courseIds.add(courseTitles.getInt("course_id"));
+    			}
+    		}
+    		System.out.println();
+    		for(int i = 0; i < courseNumbers.size(); i++) {
+    			System.out.println("[" + (i+1) + "] " + courseNumbers.get(i));
+    		}
+    		System.out.println();
+    		int selectionNumber = in.nextInt();
+    		if(selectionNumber < 0 || selectionNumber > 4) {
+    			System.out.println("Invalid selection.");
+    			showTeacherUI();
+    		}
+    		String individualCourseNumber = courseNumbers.get(selectionNumber);
+    		in.nextLine();
+    		System.out.println("[1] MP1 assignment.");
+    		System.out.println("[2] MP2 assignment.");
+    		System.out.println("[3] MP3 assignment.");
+    		System.out.println("[4] MP4 assignment.");
+    		System.out.println("[5] Midterm exam.");
+    		System.out.println("[6] Final exam.");
+    		selectionNumber = in.nextInt();
+    		in.nextLine();
+    		if(selectionNumber < 0 || selectionNumber > 6) {
+    			System.out.println("Invalid selection.");
+    			showTeacherUI();
+    		}
+    		String assignmentType = (selectionNumber == 1) ? "mp1" :
+    		(selectionNumber == 2) ? "mp2" :
+    		(selectionNumber == 3) ? "mp3" :
+    		(selectionNumber == 4) ? "mp4" :
+    		(selectionNumber == 5) ? "midterm_exam":
+    		"final_exam";
+    		int courseId = in.nextInt();
+    		in.nextLine();
+    		String title = in.nextLine();
+    		int pointValue = in.nextInt();
+    		in.nextLine();
+    		if(assignmentType.equals("mp1")) {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, true);
+    			addAssignment.setBoolean(4, false);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		} else if(assignmentType.equals("mp2")) {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, true);
+    			addAssignment.setBoolean(4, false);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		} else if(assignmentType.equals("mp3")) {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, true);
+    			addAssignment.setBoolean(4, false);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		} else if(assignmentType.equals("mp4")) {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, true);
+    			addAssignment.setBoolean(4, false);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		} else if(assignmentType.equals("midterm_exam")) {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, false);
+    			addAssignment.setBoolean(4, true);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		} else {
+    			//addAssignment.setInt(1, );
+    			addAssignment.setInt(2, Teacher.assignmentId);
+    			addAssignment.setBoolean(3, false);
+    			addAssignment.setBoolean(4, true);
+    			addAssignment.setBoolean(5, false);
+    			addAssignment.setString(6, title);
+    			addAssignment.setInt(7, pointValue);
+    		}
+    		Teacher.assignmentId ++;
+    	} catch(SQLException e) {
+    		e.printStackTrace();
+    	}
     }
     
     /*

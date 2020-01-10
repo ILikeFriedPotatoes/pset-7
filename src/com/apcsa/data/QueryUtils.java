@@ -138,6 +138,10 @@ public class QueryUtils {
     public static final String GET_COURSE_GRADES_FROM_STUDENT_ID = 
     "SELECT * FROM COURSE_GRADES " +
     	"WHERE STUDENT_ID = ?";
+    
+    public static final String ADD_ASSIGNMENTS = 
+    "INSERT INTO ASSIGNMENTS " +
+    "VALUES(?, ?, ?, ?, ?, ?, ?)";
     /*
      * Retrieves a student associated with a user account.
      */

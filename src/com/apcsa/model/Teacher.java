@@ -9,6 +9,7 @@ public class Teacher extends User {
 
     private int teacherId;
     private int departmentId;
+    public static int assignmentId = 1;
     private String firstName;
     private String lastName;
 	private String departmentName;
