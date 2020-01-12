@@ -265,6 +265,25 @@ public class QueryUtils {
         "AND c.course_id = ? " +
         "AND a.title = ? " +
         "ORDER BY a.assignment_id";
+ 
+    public static String GET_ASSIGNMENT_STUDENTS_SQL(String course_no) {
+        return "SELECT * FROM students s, course_grades cg, courses c " +
+        "WHERE s.student_id = cg.student_id AND cg.course_id = c.course_id " +
+        "AND c.course_id = " + PowerSchool.getCourseIdFromCourseNo(course_no);
+    }
+    
+    public static String GET_ASSIGNMENT_POINTS_SQL(String course_no, int assignment_id) {
+        return "SELECT * FROM assignments " +
+        "WHERE course_id = " + PowerSchool.getCourseIdFromCourseNo(course_no) + " " +
+        "AND assignment_id = " + assignment_id;
+    }
+    
+    public static String ENTER_GRADE_SQL(int course_id, int assignment_id, int student_id, int points_earned, int points_possible) {
+        return "INSERT INTO assignment_grades " +
+        "(course_id, assignment_id, student_id, points_earned, points_possible, is_graded) " +
+        "VALUES (" + course_id + ", " + assignment_id + ", " + student_id + ", " +
+                    points_earned + ", " + points_possible + ", " + 1 + ")";
+    }
     
 }
 

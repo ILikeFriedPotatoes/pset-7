@@ -408,6 +408,34 @@ public class Teacher extends User {
         }
     }
     
+    public static int enterGrade(int course_id, int assignment_id, int student_id, int points_earned, int points_possible) {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             Statement stmt2 = conn.createStatement()) {
+            
+            try (ResultSet rs = stmt2.executeQuery(
+                "SELECT * FROM assignment_grades WHERE course_id = " + course_id +
+                " AND student_id = " + student_id + " AND assignment_id = " + assignment_id)) {
+                if (rs.next()) {
+                    System.out.println("\nA grade already exists for this assignment and student.\n");
+                    return 0;
+                }
+            }
+
+            if (stmt.executeUpdate(QueryUtils.ENTER_GRADE_SQL(course_id, assignment_id, student_id, points_earned, points_possible)) == 1) {
+                updateGpaAndClassRank(student_id);
+                updateCourseGrades(student_id, course_id);
+                System.out.println("\nSuccessfully entered grade.\n");
+                return 0;
+            } else {
+                return 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    
     public static Student getStudent(Scanner in, String course_no) {
         System.out.println("\nChoose a student.\n");
         ArrayList<Student> students = PowerSchool.getAssignmentStudents(course_no);
