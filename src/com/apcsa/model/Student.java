@@ -36,17 +36,16 @@ public class Student extends User {
 	}
 
 	public Student(ResultSet rs) throws SQLException {
-		//user id, account type, username, password, last login
-		super(rs.getInt("user_id"), rs.getString("account_type"), rs.getString("username"), rs.getString("auth"), rs.getString("last_login"));
+        super(-1, "student", null, null, null);
 
-		this.studentId = rs.getInt("student_id");
-    this.classRank = rs.getInt("class_rank");
-    this.gradeLevel = rs.getInt("grade_level");
-    this.graduationYear = rs.getInt("graduation");
-    this.gpa = rs.getDouble("gpa");
-    this.firstName = rs.getString("first_name");
-		this.lastName = rs.getString("last_name");
-	}
+        this.studentId = rs.getInt("student_id");
+        this.classRank = rs.getInt("class_rank");
+        this.gradeLevel = rs.getInt("grade_level");
+        this.graduationYear = rs.getInt("graduation");
+        this.gpa = rs.getDouble("gpa");
+        this.firstName = rs.getString("first_name");
+        this.lastName = rs.getString("last_name");
+    }
 
     public String getFirstName() {
     	return firstName;
@@ -68,4 +67,20 @@ public class Student extends User {
 		return studentId;
 	}
 	
+	public double getGPA() {
+        return gpa;
+    }
+	
+	public void setClassRank(int rank) {
+        classRank = rank;
+    }
+	
+	public String getName() {
+        return lastName + ", " + firstName;
+    }
+	
+	public int getClassRank() {
+		return classRank;
+	}
+
 }

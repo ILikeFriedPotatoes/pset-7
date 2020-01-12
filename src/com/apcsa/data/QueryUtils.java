@@ -191,4 +191,81 @@ public class QueryUtils {
     public static String GET_STUDENT_ENROLLMENT_BY_COURSE_ID =
     "SELECT * FROM students LEFT OUTER JOIN course_grades ON students.student_ID = course_grades.student_id INNER JOIN courses ON courses.course_id = course_grades.course_id OUTER LEFT JOIN users ON users.user_id = students.student_id WHERE courses.course_id = ?";
 
+    public static String GET_STUDENTS_BY_GRADE_SQL(int grade) {
+        return "SELECT * FROM students " +
+        "WHERE grade_level = " + String.valueOf(grade) + " " +
+        "ORDER BY student_id";
+    }
+    
+    public static String GET_COURSES_BY_COURSENO_SQL(String courseNo) {
+        return "SELECT * FROM courses " + 
+        "WHERE course_no = \"" + courseNo + "\"";
+    }
+    
+    public static String COURSE_GRADES_BY_COURSEID_SQL(int courseId) {
+        return "SELECT * FROM course_grades " + 
+        "WHERE course_id = " + String.valueOf(courseId);
+    }
+    
+    public static String GET_STUDENT_BY_STUDENT_ID_SQL(int studentId) {
+        return "SELECT * FROM students " + 
+        "WHERE student_id = " + String.valueOf(studentId) + " " +
+        "ORDER BY last_name, first_name";
+    }
+    
+    public static String GET_TEACHER_COURSES_SQL(int teacher_id) {
+        return "SELECT * FROM courses c, teachers t " +
+        "WHERE c.teacher_id = t.teacher_id " +
+        "AND t.teacher_id = " + teacher_id + " " +
+        "ORDER BY title";
+    }
+    
+    public static String CREATE_ASSIGNMENT_SQL(
+        int course_id, int assignment_id, int marking_period,
+        int is_midterm, int is_final, String title, int point_value) {
+
+        return "INSERT INTO assignments " +
+        "(course_id, assignment_id, marking_period, is_midterm, is_final, title, point_value) " +
+        "VALUES (" + course_id + ", " + assignment_id + ", " + marking_period + ", " +
+                    is_midterm + ", " + is_final + ", \"" + title + "\", " + point_value + ")";
+    }
+    
+    public static final String GET_ASSIGNMENTS_SQL =
+        "SELECT * FROM assignments a, courses c " +
+        "WHERE a.course_id = c.course_id " +
+        "AND c.course_id = ? " +
+        "ORDER BY a.assignment_id";
+    
+    public static String GET_TEACHER_ASSIGNMENTS_SQL(int teacher_id, String course_no, int marking_period, int is_midterm, int is_final) {
+        return "SELECT * FROM assignments a, courses c, teachers t " +
+        "WHERE c.teacher_id = t.teacher_id AND c.course_id = a.course_id " +
+        "AND t.teacher_id = " + teacher_id + " " +
+        "AND a.course_id = " + PowerSchool.getCourseIdFromCourseNo(course_no) + " " +
+        "AND a.marking_period = " + marking_period + " " +
+        "AND a.is_midterm = " + is_midterm + " " +
+        "AND a.is_final = " + is_final + " " +
+        "ORDER BY a.assignment_id";
+    }
+    
+    public static String DELETE_ASSIGNMENT_SQL(int course_id, int assignment_id) {
+        return "DELETE FROM assignments " +
+        "WHERE course_id = " + course_id + " " +
+        "AND assignment_id = " + assignment_id;
+    }
+    
+    public static String DELETE_ASSIGNMENT_GRADES_SQL(int course_id, int assignment_id) {
+        return "DELETE FROM assignment_grades " +
+        "WHERE course_id = " + course_id + " " +
+        "AND assignment_id = " + assignment_id;
+    }
+    
+    public static final String GET_ASSIGNMENT_ID_FOR_ALTER_SQL =
+        "SELECT * FROM assignments a, courses c " +
+        "WHERE a.course_id = c.course_id " +
+        "AND c.course_id = ? " +
+        "AND a.title = ? " +
+        "ORDER BY a.assignment_id";
+    
 }
+
+

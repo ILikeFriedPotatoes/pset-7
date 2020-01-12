@@ -443,194 +443,14 @@ public class Application {
     private void showTeacherUI() {
     	while(activeUser!= null) {
     		switch(getTeacherMenuSelection()) {
-	    		case VIEW_ENROLLMENT: viewEnrollment(); break;
+	    		case VIEW_ENROLLMENT: viewStudentEnrollment(); break;
 	    		case ADD_ASSIGNMENT: addAssignment(); break;
-	    		case DELETE_ASSIGNMENT: break;
-	    		case ENTER_GRADE: break;
+	    		case DELETE_ASSIGNMENT: deleteAssignment(); break;
+	    		case ENTER_GRADE: enterGrade(); break;
 	    		case PASSWORD: updatePassword(activeUser.getUsername()); break;
 	    		case LOGOUT: logout(); break;
 	    		default: System.out.println("\nInvalid selection."); break;
     		}
-    	}
-    }
-    /*
-	* Let's the teacher view the grades of his or her students
-	*/
-    
-    private void viewEnrollment() {
-    	int userId = activeUser.getUserId();
-    	int teacherId = 0;
-    	ArrayList<String> courseNumbers = new ArrayList<String>();
-    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
-    	ArrayList<String> studentFirstName = new ArrayList<String>();
-    	ArrayList<String> studentLastName = new ArrayList<String>();
-    	ArrayList<Integer> studentGrade = new ArrayList<Integer>();
-    	try (Connection conn = PowerSchool.getConnection();
-    		PreparedStatement getCoursesFromCourseId = conn.prepareStatement(QueryUtils.TEACHER_VIEW_ENROLLMENT);
-    		PreparedStatement getTeacherId = conn.prepareStatement(QueryUtils.GET_TEACHER_ID_FROM_USER_ID );
-    		PreparedStatement getCourseTitles = conn.prepareStatement(QueryUtils.GET_COURSE_TITLES);) {
-    		
-    		getTeacherId.setInt(1, userId);
-    		try(ResultSet teacherIdRs = getTeacherId.executeQuery()) {
-    			teacherId = teacherIdRs.getInt("teacher_id");
-    		}
-    		getCourseTitles.setInt(1, teacherId);
-    		try(ResultSet courseTitles = getCourseTitles.executeQuery()) {
-    			while(courseTitles.next()) {
-    				courseNumbers.add(courseTitles.getString("course_no"));
-    				courseIds.add(courseTitles.getInt("course_id"));
-    			}
-    		}
-    		System.out.println();
-    		for(int i = 0; i < courseNumbers.size(); i ++) {
-    			System.out.println("[" + (i+1) + "] " + courseNumbers.get(i));
-    		}
-    		System.out.print("\n::: ");
-    		int selectionNumber = in.nextInt();
-    		in.nextLine();
-    		if(selectionNumber > courseNumbers.size() || selectionNumber < 0) {
-    			System.out.println("Invalid selection.");
-    			showTeacherUI();
-    		}
-    		getCoursesFromCourseId.setInt(1, courseIds.get(selectionNumber - 1));
-    		try(ResultSet courses = getCoursesFromCourseId.executeQuery()) {
-    			while(courses.next()) {
-    				studentFirstName.add(courses.getString("first_Name"));
-    				studentLastName.add(courses.getString("last_name"));
-    				studentGrade.add(courses.getInt("grade"));
-    			}
-    		}
-    		System.out.println();
-    		ArrayList<String> finalArrayList = new ArrayList<String>();
-    		for(int i = 0; i < studentFirstName.size(); i++) {
-    			finalArrayList.add(studentLastName.get(i) + ", "
-    			 + studentFirstName.get(i) + " / ");
-	    		if(studentGrade.get(i) == 0) {
-	    			finalArrayList.set(i, finalArrayList.get(i) + "--");
-	    		} else {
-	    			finalArrayList.set(i, finalArrayList.get(i) + Integer.toString(studentGrade.get(i)));
-    			}
-    		}
-    		Collections.sort(finalArrayList);
-    		for(int i = 0; i < finalArrayList.size(); i++) {
-    			System.out.println((i+1) + ". " + finalArrayList.get(i));
-    		}
-    	} catch(SQLException e) {
-    		e.printStackTrace();
-    	}
-    }
-    
-    /*
-	* Let's the teacher add an assignment
-	*/
-    
-    private void addAssignment() {
-    	int userId = activeUser.getUserId();
-    	int teacherId = 0;
-    	ArrayList<String> courseNumbers = new ArrayList<String>();
-    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
-    	try(Connection conn = PowerSchool.getConnection();
-    		PreparedStatement getTeacherId = conn.prepareStatement(QueryUtils.GET_TEACHER_ID_FROM_USER_ID);
-    		PreparedStatement getCourseTitles = conn.prepareStatement(QueryUtils.GET_COURSE_TITLES);
-    		PreparedStatement addAssignment = conn.prepareStatement(QueryUtils.ADD_ASSIGNMENTS);) {
-    		getTeacherId.setInt(1, userId);
-    		try(ResultSet teacherIdRs = getTeacherId.executeQuery()) {
-    			teacherId = teacherIdRs.getInt("teacher_id");
-    		}
-    		getCourseTitles.setInt(1, teacherId);
-    		try(ResultSet courseTitles = getCourseTitles.executeQuery()) {
-    			while(courseTitles.next()) {
-    				courseNumbers.add(courseTitles.getString("course_no"));
-    				courseIds.add(courseTitles.getInt("course_id"));
-    			}
-    		}
-    		System.out.println();
-    		for(int i = 0; i < courseNumbers.size(); i++) {
-    			System.out.println("[" + (i+1) + "] " + courseNumbers.get(i));
-    		}
-    		System.out.println();
-    		int selectionNumber = in.nextInt();
-    		if(selectionNumber < 0 || selectionNumber > 4) {
-    			System.out.println("Invalid selection.");
-    			showTeacherUI();
-    		}
-    		String individualCourseNumber = courseNumbers.get(selectionNumber);
-    		in.nextLine();
-    		System.out.println("[1] MP1 assignment.");
-    		System.out.println("[2] MP2 assignment.");
-    		System.out.println("[3] MP3 assignment.");
-    		System.out.println("[4] MP4 assignment.");
-    		System.out.println("[5] Midterm exam.");
-    		System.out.println("[6] Final exam.");
-    		selectionNumber = in.nextInt();
-    		in.nextLine();
-    		if(selectionNumber < 0 || selectionNumber > 6) {
-    			System.out.println("Invalid selection.");
-    			showTeacherUI();
-    		}
-    		String assignmentType = (selectionNumber == 1) ? "mp1" :
-    		(selectionNumber == 2) ? "mp2" :
-    		(selectionNumber == 3) ? "mp3" :
-    		(selectionNumber == 4) ? "mp4" :
-    		(selectionNumber == 5) ? "midterm_exam":
-    		"final_exam";
-    		int courseId = in.nextInt();
-    		in.nextLine();
-    		String title = in.nextLine();
-    		int pointValue = in.nextInt();
-    		in.nextLine();
-    		if(assignmentType.equals("mp1")) {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, true);
-    			addAssignment.setBoolean(4, false);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		} else if(assignmentType.equals("mp2")) {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, true);
-    			addAssignment.setBoolean(4, false);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		} else if(assignmentType.equals("mp3")) {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, true);
-    			addAssignment.setBoolean(4, false);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		} else if(assignmentType.equals("mp4")) {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, true);
-    			addAssignment.setBoolean(4, false);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		} else if(assignmentType.equals("midterm_exam")) {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, false);
-    			addAssignment.setBoolean(4, true);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		} else {
-    			//addAssignment.setInt(1, );
-    			addAssignment.setInt(2, Teacher.assignmentId);
-    			addAssignment.setBoolean(3, false);
-    			addAssignment.setBoolean(4, true);
-    			addAssignment.setBoolean(5, false);
-    			addAssignment.setString(6, title);
-    			addAssignment.setInt(7, pointValue);
-    		}
-    		Teacher.assignmentId ++;
-    	} catch(SQLException e) {
-    		e.printStackTrace();
     	}
     }
     
@@ -658,6 +478,31 @@ public class Application {
     	}
     }
     
+    /*
+	* Let's the teacher view the grades of his or her students
+	*/
+    
+    private void viewStudentEnrollment() {
+    	int userId = activeUser.getUserId();
+    	Teacher.viewStudentEnrollment(userId, in);
+    }
+    
+    /*
+	* Let's the teacher add an assignment
+	*/
+    
+    private void addAssignment() {
+    	Teacher.addAssignment(activeUser, in);
+    }
+    
+    private void deleteAssignment() {
+    	Teacher.deleteAssignment(activeUser, in);
+    }
+    
+    private void enterGrade() {
+    	Teacher.enterGrade(activeUser, in);
+    }
+    
     /**
      * Displays the interface for administrators
      */
@@ -665,11 +510,11 @@ public class Application {
     private void showAdministratorUI() {
     	while(activeUser != null) {
     		switch(getAdminMenuSelection()) {
-    			case VIEW_FACULTY: Administrator.viewFaculty(); break;
+    			case VIEW_FACULTY: viewFacultyAdministrator(); break;
     			case VIEW_FACULTY_DEPARTMENT: viewDepartment(); break;
-    			case VIEW_ENROLLMENT: Administrator.viewEnrollment(); break;
-    			case VIEW_ENROLLMENT_GRADE: viewEnrollmentGrade(); break;
-    			case VIEW_ENROLLMENT_COURSE: viewEnrollmentCourse(); break;
+    			case VIEW_ENROLLMENT: adminViewEnrollmentGrade(); break;
+    			case VIEW_ENROLLMENT_GRADE: viewEnrollmentByGrade(); break;
+    			case VIEW_ENROLLMENT_COURSE: viewEnrollmentByCourse(); break;
     			case PASSWORD: updatePassword(activeUser.getUsername()); break;
     			case LOGOUT: logout(); break;
     			default: System.out.println("\nInvalid selection."); break;
@@ -699,28 +544,8 @@ public class Application {
     	}
     }
     
-    private void viewEnrollmentCourse() {
-    	System.out.println("\nCourse No.: ");
-    	String courseNumber = in.nextLine();
-    	Administrator.viewCourseNumber(courseNumber);
-    }
-    
-    private void viewEnrollmentGrade() {
-    	System.out.println("\nChoose a grade level.\n");
-    	System.out.println("[1] Freshman.");
-    	System.out.println("[2] Sophomore.");
-    	System.out.println("[3] Junior.");
-    	System.out.println("[4] Senior.\n");
-		int grade = in.nextInt();
-		in.nextLine();
-		System.out.println();
-		grade = (grade == 4) ? 12: (grade == 3) ? 11 :
-		(grade == 2) ? 10 : (grade == 1) ? 9 : -1;
-		if(grade == -1) {
-			System.out.println("\nPlease enter a valid option (1-4).");
-			viewEnrollmentGrade();
-		}
-    	Administrator.viewEnrollmentGrade(grade);
+    private void viewFacultyAdministrator() {
+    	Administrator.viewFaculty();
     }
     
     private void viewDepartment() {
@@ -731,6 +556,20 @@ public class Application {
     		viewDepartment();
     	}
     	Administrator.getTeacherByDepartments(departmentId);
+    }   
+    
+    private void adminViewEnrollmentGrade() {
+    	Administrator.viewEnrollment();
+    }
+    
+    private void viewEnrollmentByGrade() {
+    	Administrator.viewEnrollmentByGrade(in);
+    }
+    
+    private void viewEnrollmentByCourse() {
+    	System.out.println("\nCourse No.: ");
+    	String courseNumber = in.nextLine();
+    	Administrator.viewEnrollmentByCourse(courseNumber, in);
     }
     
     /**

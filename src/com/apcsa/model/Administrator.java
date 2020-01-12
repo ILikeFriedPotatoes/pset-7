@@ -2,6 +2,7 @@ package com.apcsa.model;
 
 
 import java.sql.*;
+import com.apcsa.controller.Utils;
 import com.apcsa.data.*;
 import com.apcsa.model.*;
 import java.util.*;
@@ -145,6 +146,7 @@ public class Administrator extends User {
     }
     
     public static void viewEnrollment() {
+    	System.out.println();
     	try(Connection conn = PowerSchool.getConnection();
     	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_SQL); ) {
     		ArrayList<Integer> studentIds = new ArrayList<Integer>();
@@ -170,84 +172,56 @@ public class Administrator extends User {
     	}
     }
     
-    public static void viewEnrollmentGrade(int gradeLevel) {
-    	try(Connection conn = PowerSchool.getConnection();
-    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_BY_GRADE); ) {
-    		stmt.setInt(1, gradeLevel);
-    		ArrayList<Integer> studentIds = new ArrayList<Integer>();
-    		ArrayList<String> studentList = new ArrayList<String>();
-    		try(ResultSet rs= stmt.executeQuery()) {
-    			while(rs.next()) {
-    				studentIds.add(rs.getInt("student_id"));
-    			}
-    		}
-    		Collections.sort(studentList);
-    		for(int i = 0; i < studentIds.size(); i ++) {
-    			String student = "";
-    			student += studentLastName(studentIds.get(i)) + ", ";
-    			student += studentFirstName(studentIds.get(i)) + " / ";
-    			if(-1 == studentGPA(studentIds.get(i))) {
-    				student += "#0";
-    			} else {
-        			student += studentGPA(studentIds.get(i));
-    			}
-    			studentList.add(student);
-    		}
-    		Collections.sort(studentList);
-    		for(int i = 0; i < studentList.size(); i ++) {
-    			System.out.print((i+1) + ". " + studentList.get(i) + "\n"); 
-    		}
-    	}catch(SQLException e) {
-    		e.printStackTrace();
-    	}
+    public static void viewEnrollmentByGrade(Scanner in) {
+    	ArrayList<Student> students = PowerSchool.getStudentsByGradeWithUpdatedRank(getGradeSelection(in));
+
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.\n");
+        } else {
+            System.out.println();
+            int i = 1;
+
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / #" + (student.getGPA() < 0 ? "0" : student.getClassRank())); 
+            }
+            System.out.println();
+        }
     }
     
-    public static void viewCourseNumber(String courseNumber) {
-    	try(Connection conn = PowerSchool.getConnection();
-    	PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_ENROLLMENT_WITH_COURSE_NO);
-    	PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSE_GRADES_FROM_COURSE_IDS);) {
-    		stmt.setString(1, courseNumber);
-    		ArrayList<Integer> courseIds = new ArrayList<Integer>();
-    		ArrayList<Integer> studentIdsWithDuplicates = new ArrayList<Integer>();
-    		try(ResultSet rs = stmt.executeQuery()) {
-    			while(rs.next()) {
-    				courseIds.add(rs.getInt("course_id"));
-    			}
-    		}
-    		for(int i = 0; i < courseIds.size(); i ++) {
-    			stmt2.setInt(1, courseIds.get(i));
-        		try(ResultSet rs2 = stmt2.executeQuery()) {
-        			while(rs2.next()) {
-        				studentIdsWithDuplicates.add(rs2.getInt("student_id"));
-        			}
-        		}
-    		}
-    		ArrayList<Integer> studentIds = new ArrayList<Integer>();
-    		ArrayList<String> studentList = new ArrayList<String>();
-    		for(int i = 0; i < studentIdsWithDuplicates.size(); i ++) {
-    			if(!studentIds.contains(studentIdsWithDuplicates.get(i))) {
-    				studentIds.add(studentIdsWithDuplicates.get(i));
-    			}
-    		}
-    		for(int i = 0; i < studentIds.size(); i ++) {
-    			String student = "";
-    			student += studentLastName(studentIds.get(i)) + ", ";
-    			student += studentFirstName(studentIds.get(i)) + " / ";
-    			if(-1 == studentGPA(studentIds.get(i))) {
-    				student += "--";
-    			} else {
-        			student += studentGPA(studentIds.get(i));
-    			}
-    			studentList.add(student);
-    		}
-    		Collections.sort(studentList);
-    		for(int i = 0; i < studentList.size(); i ++) {
-    			System.out.print((i+1) + ". " + studentList.get(i) + "\n"); 
-    		}
-    	} catch(SQLException e) {
-    		e.printStackTrace();
-    	}
+    private static int getGradeSelection(Scanner in) {
+    	int selection = -1;
+        System.out.println("\nChoose a grade level.");
+        while (selection < 1 || selection > 5) {
+            System.out.println("\n[1] Freshman.");
+            System.out.println("[2] Sophomore.");
+            System.out.println("[3] Junior.");
+            System.out.println("[4] Senior.");
+            System.out.print("\n::: ");
+
+            selection = Utils.getInt(in, -1);
+        }
+        
+        return selection + 8;
+
     }
+    
+    public static ArrayList<Student> getStudentsByGrade(int grade) {
+   	 ArrayList<Student> students = new ArrayList<Student>();
+
+        try (Connection conn = PowerSchool.getConnection();
+            Statement stmt = conn.createStatement()) {
+
+            try (ResultSet rs = stmt.executeQuery(QueryUtils.GET_STUDENTS_BY_GRADE_SQL(grade))) {
+                while (rs.next()) {
+                    students.add(new Student(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return students;
+   }
      
     /**
      * Displays the departments
@@ -384,6 +358,21 @@ public class Administrator extends User {
     	    		e.printStackTrace();
     	    	}
     	    	return -1;
+    }
+    
+    public static void viewEnrollmentByCourse(String courseNo, Scanner in) {
+    	ArrayList<Student> students = PowerSchool.getStudentsByCourse(courseNo);
+
+        if (students.isEmpty()) {
+            System.out.println("\nNo students to display.\n");
+        } else {
+            System.out.println();
+            int i = 1;
+            for (Student student : students) {
+                System.out.println(i++ + ". " + student.getName() + " / " + (student.getGPA() >= 0 ? student.getGPA() : "--"));
+            }
+            System.out.println();
+        }
     }
 
 }
