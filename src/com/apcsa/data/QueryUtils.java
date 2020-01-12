@@ -296,6 +296,12 @@ public class QueryUtils {
         "WHERE course_id = " + String.valueOf(courseId);
     }
     
+    public static String GET_STUDENT_COURSES_SQL(int student_id) { // THIS. RIGHT HERE. THIS IS HOLY. PRAY TO IT.
+        return "SELECT * FROM courses c, students s, course_grades cg " +
+        "WHERE s.student_id = cg.student_id AND c.course_id = cg.course_id " +
+        "AND s.student_id = " + student_id;
+    }
+    
 }
 
 

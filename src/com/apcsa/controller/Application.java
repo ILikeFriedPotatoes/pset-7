@@ -372,68 +372,8 @@ public class Application {
     	}
     }
     
-	public void viewAssignmentGradesByCourse() {
-		System.out.print("\n");
-		ArrayList<String> course_nos = new ArrayList<String>();
-		ArrayList<Integer> course_ids = new ArrayList<Integer>();
-		
-    	int userId = activeUser.getUserId();
-    	int studentId = 0;
-		
-		try (Connection conn = PowerSchool.getConnection();
-			PreparedStatement stmt = conn.prepareStatement(QueryUtils.GET_STUDENT_ID_FROM_USER_ID);
-			PreparedStatement stmt2 = conn.prepareStatement(QueryUtils.GET_COURSE_GRADES_FROM_STUDENT_ID);
-			PreparedStatement stmt3 = conn.prepareStatement(QueryUtils.GET_COURSES_FROM_COURSE_ID);
-			PreparedStatement stmt4 = conn.prepareStatement(QueryUtils.GET_ASSIGNMENT_GRADES_FROM_STUDENT_ID_AND_COURSE_ID);) {
-			
-			stmt.setInt(1, userId);
-			try (ResultSet rs = stmt.executeQuery()) {
-				studentId = rs.getInt("student_id");
-			}
-			stmt2.setInt(1, studentId);
-			try(ResultSet rs2 = stmt2.executeQuery()) {
-				while(rs2.next()) {
-					course_ids.add(rs2.getInt("course_id"));
-				}
-			}
-			for(int i = 0; i < course_ids.size(); i++) {
-				stmt3.setInt(1, course_ids.get(i));
-				try(ResultSet rs3 = stmt3.executeQuery()) {
-					course_nos.add(rs3.getString("course_no"));
-				}
-			}
-			System.out.println("Choose a course.\n");
-			for(int i = 0; i < course_nos.size(); i ++) {
-				System.out.println("[" + (i+1) + "] " + course_nos.get(i));
-			}
-			System.out.print("\n::: ");
-			int option = in.nextInt();
-			in.nextLine();
-			int individualCourseId = course_ids.get(option);
-			stmt4.setInt(1, individualCourseId);
-			stmt4.setInt(2, studentId);
-			
-			System.out.println("\n[1] MP1 Assignment.");
-			System.out.println("[2] MP2 Assignment.");
-			System.out.println("[3] MP3 Assignment.");
-			System.out.println("[4] MP4 Assignment.");
-			System.out.println("[5] Midterm Exam.");
-			System.out.println("[6] Final Exam.");
-			
-			ArrayList<Integer> pointsEarned = new ArrayList<Integer>();
-			ArrayList<Integer> pointsPossible = new ArrayList<Integer>();
-			ArrayList<String> courseTitle = new ArrayList<String>();
-			ArrayList<Integer> courseId = new ArrayList<Integer>();
-			try(ResultSet courseGrades = stmt4.executeQuery()) {
-				while(courseGrades.next() ) {
-					pointsEarned.add(courseGrades.getInt("points_earned"));
-					pointsPossible.add(courseGrades.getInt("points_possible"));
-				}
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	private void viewAssignmentGradesByCourse() {
+		Student.viewAssignmentGradesByCourse(activeUser, in);
 	}
     
     /**

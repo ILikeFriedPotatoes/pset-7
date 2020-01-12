@@ -947,4 +947,45 @@ public class PowerSchool {
         return (ptsEarned / ptsPossible) * 100;
     }
     
+    public static ArrayList<String> getStudentAssignments(int student_id, int course_id, int marking_period, int is_midterm, int is_final) {
+        ArrayList<String> assignments = new ArrayList<String>();
+        String sql = "SELECT * FROM assignment_grades ag " +
+        "LEFT JOIN assignments a ON ag.assignment_id = a.assignment_id " +
+        "AND ag.course_id = a.course_id " +
+        "WHERE ag.student_id = " + student_id +
+        " AND ag.course_id = " + course_id +
+        " AND a.marking_period = " + marking_period +
+        " AND a.is_midterm = " + is_midterm +
+        " AND a.is_final = " + is_final;
+        
+        try (Connection conn = getConnection();
+            Statement stmt = conn.createStatement()) {
+
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    assignments.add(rs.getString("title") + " / " + rs.getInt("points_earned") + " (out of " + rs.getInt("points_possible") + " pts)");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return assignments;
+    }
+ 
+    public static ArrayList<String> getStudentCoursesWithId(int student_id) {
+        ArrayList<String> courses = new ArrayList<String>();
+        try (Connection conn = getConnection();
+            Statement stmt = conn.createStatement()) {
+
+            try (ResultSet rs = stmt.executeQuery(QueryUtils.GET_STUDENT_COURSES_SQL(student_id))) {
+                while (rs.next()) {
+                    courses.add(rs.getString("course_no"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
+    
 }
