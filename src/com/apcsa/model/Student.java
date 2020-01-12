@@ -83,4 +83,8 @@ public class Student extends User {
 		return classRank;
 	}
 
+	public void setGPA(double newGpa) {
+        gpa = newGpa;
+    }
+	
 }

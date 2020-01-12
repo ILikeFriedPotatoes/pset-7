@@ -914,4 +914,37 @@ public class PowerSchool {
         
     }
     
+    private static double calculateMP(int mp, int student_id, int course_id) {
+        double ptsPossible = 0;
+        double ptsEarned = 0;
+        int mpVal = 0; int midtermVal = 0; int finalVal = 0;
+        if (mp >= 1 && mp <= 4) {
+            mpVal = mp;
+            midtermVal = 0;
+            finalVal = 0;
+        } else if (mp == 5) {
+            mpVal = 0;
+            midtermVal = 1;
+            finalVal = 0;
+        } else if (mp == 6) {
+            mpVal = 0;
+            midtermVal = 0;
+            finalVal = 1;
+        }
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+
+            try (ResultSet rs = stmt.executeQuery("SELECT * FROM assignment_grades ag, assignments a WHERE ag.course_id = a.course_id AND ag.assignment_id = a.assignment_id AND ag.student_id = " + student_id + " AND ag.course_id = " + course_id + " AND a.marking_period = " + mpVal + " AND a.is_midterm = " + midtermVal + " AND a.is_final = " + finalVal)) { // TODO damn, this is a bad method, but here it is
+                while (rs.next()) {
+                    ptsPossible += rs.getInt("points_possible");
+                    ptsEarned += rs.getInt("points_earned");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return (ptsEarned / ptsPossible) * 100;
+    }
+    
 }

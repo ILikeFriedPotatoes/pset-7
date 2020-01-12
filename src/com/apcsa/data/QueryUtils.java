@@ -285,6 +285,17 @@ public class QueryUtils {
                     points_earned + ", " + points_possible + ", " + 1 + ")";
     }
     
+    public static String GET_STUDENT_GRADES_ALL_SQL(int studentId) {
+        return "SELECT * FROM course_grades " + 
+        "WHERE student_id = " + String.valueOf(studentId) + " " + 
+        "ORDER BY course_id";
+    }
+    
+    public static String GET_COURSES_SQL(int courseId) {
+        return "SELECT * FROM courses " + 
+        "WHERE course_id = " + String.valueOf(courseId);
+    }
+    
 }
 
 
